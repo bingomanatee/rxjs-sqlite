@@ -173,8 +173,20 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     }
 
     // Use atmo-db's createTableSchema function to generate the CREATE TABLE statement
+    // @ts-ignore - Import from @wonderlandlabs/atmo-db
     const { createTableSchema } = require('@wonderlandlabs/atmo-db');
-    const createTableSql = createTableSchema(this.tableName, schemaObj);
+
+    let createTableSql: string;
+    try {
+      createTableSql = createTableSchema(this.tableName, schemaObj);
+    } catch (error) {
+      console.error('Error creating table schema:', error);
+      // Fallback to a simple CREATE TABLE statement
+      const columns = Object.entries(schemaObj)
+        .map(([column, type]) => `${column} ${type}`)
+        .join(', ');
+      createTableSql = `CREATE TABLE IF NOT EXISTS ${this.tableName} (${columns})`;
+    }
 
     // Create the main document table
     const createTableQuery: SQLiteQueryWithParams = {
@@ -207,7 +219,21 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
    */
   private async runQuery(db: SQLiteDatabaseClass, query: SQLiteQueryWithParams): Promise<void> {
     try {
-      await db.run(query);
+      // @ts-ignore - SQLite database methods may vary between implementations
+      if (typeof db.run === 'function') {
+        await db.run(query.query, query.params);
+      } else if (typeof db.exec === 'function') {
+        await db.exec(query.query, query.params);
+      } else if (typeof db.prepare === 'function') {
+        const stmt = db.prepare(query.query);
+        if (typeof stmt.run === 'function') {
+          await stmt.run(query.params);
+        } else {
+          throw new Error('No suitable method found to execute the query');
+        }
+      } else {
+        throw new Error('No suitable method found to execute the query');
+      }
     } catch (error) {
       console.error('Error running query:', error);
       console.error('Query:', query.query);

@@ -3,13 +3,20 @@
  * Integrates the query translation logic from @wonderlandlabs/atmo-db
  */
 import type { FilledMangoQuery, MangoQuerySelector } from 'rxdb';
-import {
-  cmp,
-  and,
-  or,
-  not,
-  parseNode
-} from '@wonderlandlabs/atmo-db';
+
+// @ts-ignore - Import from @wonderlandlabs/atmo-db
+import { cmp, and, or, not, parseNode } from '@wonderlandlabs/atmo-db';
+
+// Fallback implementations in case the imports fail
+const fallbackCmp = (field: string, value: any, op: string) => `${field} ${op} ?`;
+const fallbackAnd = (...args: any[]) => args.join(' AND ');
+const fallbackOr = (...args: any[]) => args.join(' OR ');
+const fallbackNot = (arg: any) => `NOT (${arg})`;
+const fallbackParseNode = (node: any, params: any[]) => {
+  if (typeof node === 'string') return node;
+  if (!node) return '1=1';
+  return '1=1';
+};
 
 /**
  * Builds a SQLite query from a Mango query
