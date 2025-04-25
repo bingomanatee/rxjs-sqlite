@@ -233,6 +233,20 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
    */
   private async runQuery(db: SQLiteDatabaseClass, query: SQLiteQueryWithParams): Promise<void> {
     try {
+      // Log the actual SQL query with parameters substituted
+      let debugQuery = query.query;
+      if (query.params && query.params.length > 0) {
+        // Replace placeholders with actual values for debugging
+        let paramIndex = 0;
+        debugQuery = query.query.replace(/\?/g, () => {
+          const param = query.params[paramIndex++];
+          if (param === null) return 'NULL';
+          if (typeof param === 'string') return `'${param.replace(/'/g, "''")}'`;
+          return String(param);
+        });
+      }
+      console.log('Executing SQL query:', debugQuery);
+
       // @ts-ignore - SQLite database methods may vary between implementations
       if (typeof db.run === 'function') {
         await db.run(query.query, query.params);
