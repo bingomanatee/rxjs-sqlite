@@ -329,9 +329,13 @@ describe('Relational SQLite Adapter', () => {
     const tables = sqliteDb.prepare("SELECT name FROM sqlite_master WHERE type='table';").all();
 
     // There should be a table for the recipes collection
-    const recipeTableName = `${db.name}_recipes`;
-    const tableExists = tables.some((table: any) => table.name === recipeTableName);
+    // The table name format is: test_relational_db_1745619777822_287897__recipes
+    const recipeTablePattern = new RegExp(`${db.name.replace(/-/g, '_')}__recipes$`);
+    const tableExists = tables.some((table: any) => recipeTablePattern.test(table.name));
     expect(tableExists).toBe(true);
+
+    // Find the actual table name
+    const recipeTableName = tables.find((table: any) => recipeTablePattern.test(table.name))?.name;
 
     // Check the columns in the table
     const columns = sqliteDb.prepare(`PRAGMA table_info(${recipeTableName});`).all();
