@@ -40,9 +40,11 @@ export class RxStorageSQLite implements RxStorage<SQLiteInternals, SQLiteInstanc
       await this.settings.sqliteBasics.setPragma(db, 'journal_mode', this.settings.sqliteBasics.journalMode);
     }
 
-    // Store the database instance in the static property
+    // Store the database instance in the static property and map
     // @ts-ignore - Adding static property to the function
     getRxStorageSQLite.lastDB = db;
+    // @ts-ignore - Adding to static map
+    getRxStorageSQLite.databaseMap.set(databaseName, db);
 
     // Create the storage instance
     const storageInstance = new RxStorageInstanceSQLite<RxDocType>(
@@ -70,6 +72,10 @@ export function getRxStorageSQLite(options?: Database.Options): RxStorageSQLite 
   });
 }
 
+// Initialize a static map to store database instances by name
+// @ts-ignore - Adding static property to the function
+getRxStorageSQLite.databaseMap = new Map();
+
 // Add a static method to get the last created database instance
 // @ts-ignore - Adding static method to the function
 getRxStorageSQLite.getLastDB = function() {
@@ -77,6 +83,20 @@ getRxStorageSQLite.getLastDB = function() {
   return getRxStorageSQLite.lastDB;
 };
 
+// Add a static method to get a database instance by name
+// @ts-ignore - Adding static method to the function
+getRxStorageSQLite.getDBByName = function(databaseName: string) {
+  // @ts-ignore - Accessing static map
+  return getRxStorageSQLite.databaseMap.get(databaseName);
+};
+
+// Add a static method to list all available database names
+// @ts-ignore - Adding static method to the function
+getRxStorageSQLite.getAvailableDatabases = function() {
+  // @ts-ignore - Accessing static map
+  return Array.from(getRxStorageSQLite.databaseMap.keys());
+};
+
 // Note: We removed the rawQuery method because it could lead to confusion
 // when multiple databases are created. Users should save a reference to the
-// database instance returned by getLastDB() and use it directly.
+// database instance returned by getLastDB() or getDBByName() and use it directly.

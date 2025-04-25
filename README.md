@@ -390,7 +390,15 @@ Creates a new RxDB SQLite storage adapter using the relational storage approach.
 
 Returns the last created SQLite database instance. This allows direct access to the underlying better-sqlite3 database for executing raw SQL queries.
 
-⚠️ **WARNING**: This method only returns the most recently created database instance. If you create multiple RxDB databases, you should save a reference to the returned database instance immediately after creating your RxDB database, rather than relying on this method.
+#### `getRxStorageSQLite.getDBByName(databaseName: string): Database` / `getRelationalRxStorageSQLite.getDBByName(databaseName: string): Database`
+
+Returns a SQLite database instance by its name. This is useful when you have multiple RxDB databases and need to access a specific one.
+
+#### `getRxStorageSQLite.getAvailableDatabases(): string[]` / `getRelationalRxStorageSQLite.getAvailableDatabases(): string[]`
+
+Returns an array of all database names that have been created and are available in the map.
+
+⚠️ **NOTE**: The adapter maintains a map of all created database instances, indexed by database name. This allows you to access any database instance at any time, not just the most recently created one.
 
 **IMPORTANT**: SQLite has limitations with concurrent write operations. While you can create a separate connection to read from the same database file, concurrent write operations from multiple connections can lead to database locks or corruption. For write operations, you should either:
 
@@ -405,28 +413,47 @@ Reading from multiple connections is generally safe, but writing should be done 
 const { createRxDatabase } = require('rxdb');
 const { getRxStorageSQLite } = require('rxjs-sqlite/rxdb-adapter');
 
-// Create RxDB database with blob-style storage
-const db = await createRxDatabase({
-  name: 'mydb',
+// Create multiple RxDB databases
+const recipeDb = await createRxDatabase({
+  name: 'recipes',
   storage: getRxStorageSQLite({
-    filename: 'path/to/database.sqlite'
+    filename: 'path/to/recipes.sqlite'
   })
 });
 
-// Save a reference to the SQLite instance immediately
-const sqliteDb = getRxStorageSQLite.getLastDB();
+const userDb = await createRxDatabase({
+  name: 'users',
+  storage: getRxStorageSQLite({
+    filename: 'path/to/users.sqlite'
+  })
+});
 
-// Now you can use the SQLite instance for raw queries
-const results = sqliteDb.prepare(`
+// Access SQLite instances by database name
+const recipesSqliteDb = getRxStorageSQLite.getDBByName('recipes');
+const usersSqliteDb = getRxStorageSQLite.getDBByName('users');
+
+// List all available databases
+const availableDatabases = getRxStorageSQLite.getAvailableDatabases();
+console.log('Available databases:', availableDatabases); // ['recipes', 'users']
+
+// Use the recipe database for raw queries
+const results = recipesSqliteDb.prepare(`
   SELECT r.id, r.name, COUNT(ri.id) as ingredient_count
-  FROM recipes r
-  JOIN recipe_ingredients ri ON r.id = ri.recipeId
+  FROM recipes_recipes r
+  JOIN recipes_ingredients ri ON r.id = ri.recipeId
   GROUP BY r.id
   ORDER BY ingredient_count DESC
   LIMIT 5
 `).all();
 
 console.log('Top 5 recipes by ingredient count:', results);
+
+// Use the user database for user-related queries
+const activeUsers = usersSqliteDb.prepare(`
+  SELECT * FROM users_users WHERE json_extract(data, '$.active') = 1
+`).all();
+
+console.log('Active users:', activeUsers);
 ```
 
 ### Using the Relational SQLite Adapter

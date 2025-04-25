@@ -41,9 +41,11 @@ export class RelationalRxStorageSQLite implements RxStorage<SQLiteInternals, SQL
       await this.settings.sqliteBasics.setPragma(db, 'journal_mode', this.settings.sqliteBasics.journalMode);
     }
 
-    // Store the database instance in the static property
+    // Store the database instance in the static property and map
     // @ts-ignore - Adding static property to the function
     getRelationalRxStorageSQLite.lastDB = db;
+    // @ts-ignore - Adding to static map
+    getRelationalRxStorageSQLite.databaseMap.set(databaseName, db);
 
     // Create the storage instance
     const storageInstance = new RelationalStorageInstanceSQLite<RxDocType>(
@@ -71,9 +73,27 @@ export function getRelationalRxStorageSQLite(options?: Database.Options): Relati
   });
 }
 
+// Initialize a static map to store database instances by name
+// @ts-ignore - Adding static property to the function
+getRelationalRxStorageSQLite.databaseMap = new Map();
+
 // Add a static method to get the last created database instance
 // @ts-ignore - Adding static method to the function
 getRelationalRxStorageSQLite.getLastDB = function() {
   // @ts-ignore - Accessing static property
   return getRelationalRxStorageSQLite.lastDB;
+};
+
+// Add a static method to get a database instance by name
+// @ts-ignore - Adding static method to the function
+getRelationalRxStorageSQLite.getDBByName = function(databaseName: string) {
+  // @ts-ignore - Accessing static map
+  return getRelationalRxStorageSQLite.databaseMap.get(databaseName);
+};
+
+// Add a static method to list all available database names
+// @ts-ignore - Adding static method to the function
+getRelationalRxStorageSQLite.getAvailableDatabases = function() {
+  // @ts-ignore - Accessing static map
+  return Array.from(getRelationalRxStorageSQLite.databaseMap.keys());
 };
