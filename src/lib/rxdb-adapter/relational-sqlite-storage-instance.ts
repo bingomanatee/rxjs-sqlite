@@ -345,7 +345,8 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
         const row = this.documentToRow(document);
 
         // Build column names and placeholders for SQL
-        const columns = Object.keys(row);
+        // Make sure all column names are strings
+        const columns = Object.keys(row).map(col => String(col));
         const placeholders = columns.map(() => '?').join(', ');
         const values = columns.map(col => row[col]);
 
