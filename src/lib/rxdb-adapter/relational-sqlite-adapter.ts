@@ -28,8 +28,32 @@ export class RelationalRxStorageSQLite implements RxStorage<SQLiteInternals, SQL
   async createStorageInstance<RxDocType>(
     params: RxStorageInstanceCreationParams<RxDocType, SQLiteInstanceCreationOptions>
   ): Promise<RelationalStorageInstanceSQLite<RxDocType>> {
-    // Create a database connection
+    // Get the database name
     const databaseName = params.databaseName;
+
+    // Check if we already have a database instance with this name
+    // @ts-ignore - Accessing static map
+    const existingDb = getRelationalRxStorageSQLite.databaseMap.get(databaseName);
+    if (existingDb) {
+      console.log(`Reusing existing relational SQLite database instance for "${databaseName}"`);
+
+      // Store in the lastDB property
+      // @ts-ignore - Adding static property to the function
+      getRelationalRxStorageSQLite.lastDB = existingDb;
+
+      // Create the storage instance with the existing database
+      const storageInstance = new RelationalStorageInstanceSQLite<RxDocType>(
+        params,
+        { databasePromise: Promise.resolve(existingDb) }
+      );
+
+      // Initialize the storage instance
+      await storageInstance.initialize();
+
+      return storageInstance;
+    }
+
+    // If no existing instance, create a new database connection
     const dbPath = `${this.settings.databaseNamePrefix || ''}${databaseName}.sqlite`;
 
     // Create the database connection
