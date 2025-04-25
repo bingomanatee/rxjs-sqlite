@@ -392,13 +392,13 @@ The SQLite adapter includes a robust database instance management system that ma
 
 ### Database Retrieval Methods
 
-#### `getRxStorageSQLite.getLastDB(): Database` / `getRelationalRxStorageSQLite.getLastDB(): Database`
+#### `getRxStorageSQLite.getDBByName(nameOrDatabase: string | RxDatabase): Database` / `getRelationalRxStorageSQLite.getDBByName(nameOrDatabase: string | RxDatabase): Database`
 
-Returns the most recently created SQLite database instance. This allows direct access to the underlying better-sqlite3 database for executing raw SQL queries.
+Returns a SQLite database instance by its name or from a database object. This method accepts either:
+- A string representing the database name
+- An RxDB database object from which the name will be extracted
 
-#### `getRxStorageSQLite.getDBByName(databaseName: string): Database` / `getRelationalRxStorageSQLite.getDBByName(databaseName: string): Database`
-
-Returns a SQLite database instance by its name. This is useful when you have multiple RxDB databases and need to access a specific one.
+This flexible method makes it easy to get the underlying SQLite instance in various scenarios.
 
 #### `getRxStorageSQLite.getAvailableDatabases(): string[]` / `getRelationalRxStorageSQLite.getAvailableDatabases(): string[]`
 
@@ -483,14 +483,14 @@ const db2 = await createRxDatabase({
 
 // Both db1 and db2 use the same underlying SQLite instance
 const sqliteDb1 = getRxStorageSQLite.getDBByName('shared');
-const sqliteDb2 = getRxStorageSQLite.getLastDB();
+const sqliteDb2 = getRxStorageSQLite.getDBByName(db2); // Pass the database object directly
 
 console.log(sqliteDb1 === sqliteDb2); // true - same instance
 ```
 
 **IMPORTANT**: SQLite has limitations with concurrent write operations. While you can create a separate connection to read from the same database file, concurrent write operations from multiple connections can lead to database locks or corruption. For write operations, you should either:
 
-1. Use the database instance returned by `getLastDB()` immediately after creating your RxDB database
+1. Use the database instance returned by `getDBByName()` to access the underlying SQLite database
 2. Close your RxDB database before opening a new connection to the same file
 3. Use RxDB's API for write operations whenever possible
 

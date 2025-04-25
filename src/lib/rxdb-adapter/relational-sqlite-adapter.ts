@@ -37,9 +37,7 @@ export class RelationalRxStorageSQLite implements RxStorage<SQLiteInternals, SQL
     if (existingDb) {
       console.log(`Reusing existing relational SQLite database instance for "${databaseName}"`);
 
-      // Store in the lastDB property
-      // @ts-ignore - Adding static property to the function
-      getRelationalRxStorageSQLite.lastDB = existingDb;
+      // No need to update the map as the instance is already there
 
       // Create the storage instance with the existing database
       const storageInstance = new RelationalStorageInstanceSQLite<RxDocType>(
@@ -65,9 +63,7 @@ export class RelationalRxStorageSQLite implements RxStorage<SQLiteInternals, SQL
       await this.settings.sqliteBasics.setPragma(db, 'journal_mode', this.settings.sqliteBasics.journalMode);
     }
 
-    // Store the database instance in the static property and map
-    // @ts-ignore - Adding static property to the function
-    getRelationalRxStorageSQLite.lastDB = db;
+    // Store the database instance in the map
     // @ts-ignore - Adding to static map
     getRelationalRxStorageSQLite.databaseMap.set(databaseName, db);
 
@@ -101,16 +97,18 @@ export function getRelationalRxStorageSQLite(options?: Database.Options): Relati
 // @ts-ignore - Adding static property to the function
 getRelationalRxStorageSQLite.databaseMap = new Map();
 
-// Add a static method to get the last created database instance
+// Add a static method to get a database instance by name or from a database object
 // @ts-ignore - Adding static method to the function
-getRelationalRxStorageSQLite.getLastDB = function() {
-  // @ts-ignore - Accessing static property
-  return getRelationalRxStorageSQLite.lastDB;
-};
+getRelationalRxStorageSQLite.getDBByName = function(nameOrDatabase: string | any) {
+  // If it's a database object, extract the name
+  const databaseName = typeof nameOrDatabase === 'string'
+    ? nameOrDatabase
+    : nameOrDatabase?.name;
 
-// Add a static method to get a database instance by name
-// @ts-ignore - Adding static method to the function
-getRelationalRxStorageSQLite.getDBByName = function(databaseName: string) {
+  if (!databaseName) {
+    throw new Error('Invalid database name or object');
+  }
+
   // @ts-ignore - Accessing static map
   return getRelationalRxStorageSQLite.databaseMap.get(databaseName);
 };
