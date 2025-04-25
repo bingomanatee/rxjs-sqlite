@@ -31,7 +31,7 @@ export function getSQLiteQueryBuilderFromMangoQuery<RxDocType>(
   // Start building the query
   let query = isCountQuery
     ? `SELECT COUNT(*) as count FROM ${tableName}`
-    : `SELECT id, data, _deleted, _rev, _meta FROM ${tableName}`;
+    : `SELECT * FROM ${tableName}`;
 
   // Build the WHERE clause if there's a selector
   if (mangoQuery.selector && Object.keys(mangoQuery.selector).length > 0) {
