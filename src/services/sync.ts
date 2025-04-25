@@ -67,7 +67,9 @@ export const syncRecipeDetail = async (recipeId: string) => {
       instructions: recipeDetail.instructions,
       thumbnail: recipeDetail.thumbnail,
       createdAt: recipeDetail.createdAt,
-      updatedAt: recipeDetail.updatedAt
+      updatedAt: recipeDetail.updatedAt,
+      category: recipeDetail.category,
+      cuisine: recipeDetail.cuisine
     });
 
     // Sync category and cuisine if available
