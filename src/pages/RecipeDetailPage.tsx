@@ -256,26 +256,14 @@ const RecipeDetailPage = () => {
             </IconButton>
           </Box>
 
-          <Box sx={{ mb: 2 }}>
-            {recipe.getCategoryName && (
-              <Chip
-                label={recipe.getCategoryName}
-                size="small"
-                sx={{ mr: 1, mb: 1 }}
-                color="primary"
-                variant="outlined"
-              />
-            )}
-            {recipe.getCuisineName && (
-              <Chip
-                label={recipe.getCuisineName}
-                size="small"
-                sx={{ mr: 1, mb: 1 }}
-                color="secondary"
-                variant="outlined"
-              />
-            )}
-          </Box>
+          {/* Category and Cuisine as text */}
+          {(recipe.getCategoryName || recipe.getCuisineName) && (
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              {recipe.getCategoryName && recipe.getCuisineName
+                ? `${recipe.getCategoryName} • ${recipe.getCuisineName}`
+                : recipe.getCategoryName || recipe.getCuisineName}
+            </Typography>
+          )}
 
           {/* Recipe Description */}
           <Typography variant="body1" paragraph sx={{ mb: 3 }}>
