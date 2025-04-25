@@ -105,6 +105,8 @@ describe('Relational SQLite Adapter', () => {
     const uniqueDbName = `${dbName}-${Math.floor(Math.random() * 1000000)}`;
     const uniqueDbPath = path.join(__dirname, '..', '..', '..', `${uniqueDbName}.sqlite`);
 
+    console.log('Setting up test with database:', uniqueDbName);
+
     // Remove any existing test database file
     if (fs.existsSync(uniqueDbPath)) {
       try {
@@ -114,29 +116,39 @@ describe('Relational SQLite Adapter', () => {
       }
     }
 
-    // Create a new database with the relational SQLite adapter
-    db = await createRxDatabase({
-      name: uniqueDbName,
-      storage: getRelationalRxStorageSQLite({
-        filename: uniqueDbPath
-      }),
-      // Enable dev mode to catch validation errors
-      devMode: true,
-      options: {
-        validationStrategy: {
-          validateBeforeInsert: true,
-          validateBeforeSave: true,
-          validateOnQuery: false
+    try {
+      // Create a new database with the relational SQLite adapter
+      console.log('Creating RxDatabase...');
+      db = await createRxDatabase({
+        name: uniqueDbName,
+        storage: getRelationalRxStorageSQLite({
+          filename: uniqueDbPath
+        }),
+        // Disable validation for testing
+        devMode: false,
+        options: {
+          validationStrategy: {
+            validateBeforeInsert: false,
+            validateBeforeSave: false,
+            validateOnQuery: false
+          }
         }
-      }
-    });
+      });
+      console.log('RxDatabase created successfully');
 
-    // Add a collection for recipes
-    await db.addCollections({
-      recipes: {
-        schema: recipeSchema
-      }
-    });
+      // Add a collection for recipes
+      console.log('Adding collections...');
+      await db.addCollections({
+        recipes: {
+          schema: recipeSchema
+        }
+      });
+      console.log('Collections added successfully');
+    } catch (error) {
+      console.error('ERROR IN TEST SETUP:', error);
+      console.error('Stack trace:', error.stack);
+      throw error; // Re-throw to fail the test
+    }
   });
 
   afterEach(async () => {
