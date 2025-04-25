@@ -1,0 +1,58 @@
+[
+  {
+    "id": "34902903",
+    "name": "Beef"
+  },
+  {
+    "id": "742929dc",
+    "name": "Chicken"
+  },
+  {
+    "id": "eabbf14c",
+    "name": "Dessert"
+  },
+  {
+    "id": "236eb95c",
+    "name": "Lamb"
+  },
+  {
+    "id": "02c081f8",
+    "name": "Miscellaneous"
+  },
+  {
+    "id": "871235bc",
+    "name": "Pasta"
+  },
+  {
+    "id": "09964dde",
+    "name": "Pork"
+  },
+  {
+    "id": "f57611ad",
+    "name": "Seafood"
+  },
+  {
+    "id": "9c62ad1f",
+    "name": "Side"
+  },
+  {
+    "id": "c49a532a",
+    "name": "Starter"
+  },
+  {
+    "id": "792fec82",
+    "name": "Vegan"
+  },
+  {
+    "id": "2b65cd61",
+    "name": "Vegetarian"
+  },
+  {
+    "id": "835ef6c0",
+    "name": "Breakfast"
+  },
+  {
+    "id": "a94aa000",
+    "name": "Goat"
+  }
+]

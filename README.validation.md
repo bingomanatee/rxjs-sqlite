@@ -49,7 +49,9 @@ const db = await createRxDatabase({
 
 ### 2. Use a Custom Validator (Recommended)
 
-A better approach is to use a custom validator that properly handles nullable fields:
+A better approach is to use a custom validator that properly handles nullable fields. There are two ways to do this:
+
+#### Option A: Control Validation Timing (Fine-Grained Control)
 
 ```javascript
 const db = await createRxDatabase({
@@ -59,12 +61,60 @@ const db = await createRxDatabase({
   }),
   // Keep dev mode enabled
   devMode: true,
-  // Use a custom validator that handles nullable fields
+  // Control when validation occurs in the document lifecycle
   validationStrategy: {
-    validateBeforeInsert: false,
-    validateBeforeSave: false,
-    validateOnQuery: false
+    validateBeforeInsert: true,  // Enable validation before insert
+    validateBeforeSave: false,   // Disable validation before save/update
+    validateOnQuery: false       // Disable validation during queries
   }
+});
+```
+
+This approach gives you fine-grained control over when validation occurs. You can enable validation at specific points in the document lifecycle where you need it, and disable it at others where nullable fields might cause issues. For example, you might want to validate documents when they're first inserted, but skip validation during queries.
+
+#### Option B: Implement a True Custom Validator (More Robust)
+
+```javascript
+import { createRxDatabase } from 'rxdb';
+import { getRxStorageSQLite } from 'rxjs-sqlite/rxdb-adapter';
+import Ajv from 'ajv';
+
+// Create a custom validator that properly handles nullable fields
+const createCustomValidator = () => {
+  const ajv = new Ajv({
+    nullable: true,
+    allowUnionTypes: true,
+    strictTypes: false
+  });
+
+  return {
+    validate: (schema, data) => {
+      const validate = ajv.compile(schema);
+      const valid = validate(data);
+      if (!valid) {
+        return {
+          valid: false,
+          errors: validate.errors
+        };
+      }
+      return {
+        valid: true,
+        errors: []
+      };
+    }
+  };
+};
+
+// Use the custom validator
+const db = await createRxDatabase({
+  name: 'mydb',
+  storage: getRxStorageSQLite({
+    filename: 'path/to/database.sqlite'
+  }),
+  // Keep dev mode enabled
+  devMode: true,
+  // Use a true custom validator
+  validationInstance: createCustomValidator()
 });
 ```
 
@@ -150,7 +200,7 @@ When using the RxDB SQLite adapter, we recommend:
    ```javascript
    { type: ['string', 'null'], default: null }
    ```
-   
+
 2. **Set explicit defaults for nullable fields**:
    ```javascript
    { type: ['string', 'null'], default: null }
@@ -203,8 +253,8 @@ const userSchema = {
     email: { type: 'string' },
     // Nullable fields with proper definition
     bio: { type: ['string', 'null'], default: null },
-    address: { 
-      type: ['object', 'null'], 
+    address: {
+      type: ['object', 'null'],
       default: null,
       properties: {
         street: { type: 'string' },

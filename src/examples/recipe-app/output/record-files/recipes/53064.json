@@ -1,0 +1,11 @@
+{
+  "id": "53064",
+  "name": "Fettuccine Alfredo",
+  "categoryId": "871235bc",
+  "cuisineId": "2267860f",
+  "instructions": "Cook pasta according to package instructions in a large pot of boiling water and salt. Add [INGREDIENT:8e411b99:singular] and [INGREDIENT:d74fdde2:singular] to a large skillet over medium heat until the cream bubbles and the [INGREDIENT:d74fdde2:singular] melts. Whisk in [INGREDIENT:4331ac26:singular] and add seasoning (salt and [INGREDIENT:c097a39d:singular]). Let the sauce thicken slightly and then add the pasta and toss until coated in sauce. Garnish with [INGREDIENT:ad74d421:singular], and it's ready.",
+  "originalInstructions": "Cook pasta according to package instructions in a large pot of boiling water and salt. Add heavy cream and butter to a large skillet over medium heat until the cream bubbles and the butter melts. Whisk in parmesan and add seasoning (salt and black pepper). Let the sauce thicken slightly and then add the pasta and toss until coated in sauce. Garnish with parsley, and it's ready.",
+  "thumbnail": "https://www.themealdb.com/images/media/meals/0jv5gx1661040802.jpg",
+  "createdAt": "2025-04-23T02:48:21.437Z",
+  "updatedAt": "2025-04-23T02:48:21.437Z"
+}

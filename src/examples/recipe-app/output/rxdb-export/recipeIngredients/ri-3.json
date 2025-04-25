@@ -1,0 +1,9 @@
+{
+  "id": "ri-3",
+  "recipeId": "recipe-1",
+  "ingredientId": "ing-3",
+  "originalMeasure": "100g",
+  "quantity": 100,
+  "unit": "g",
+  "additionalInfo": "diced"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "src-2",
+  "recipeId": "recipe-2",
+  "url": "https://example.com/curry",
+  "type": "website",
+  "platform": null,
+  "domain": "example.com",
+  "description": "Easy Chicken Curry"
+}

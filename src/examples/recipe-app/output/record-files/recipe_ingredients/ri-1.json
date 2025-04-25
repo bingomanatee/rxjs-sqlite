@@ -1,0 +1,9 @@
+{
+  "id": "ri-1",
+  "recipeId": "recipe-1",
+  "ingredientId": "ing-1",
+  "originalMeasure": "200g",
+  "quantity": 200,
+  "unit": "g",
+  "additionalInfo": null
+}

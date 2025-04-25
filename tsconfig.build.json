@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/examples/**/*",
+    "src/lib/rxdb-adapter",
+    "src/server/**/*",
+    "**/*.test.ts"
+  ]
+}

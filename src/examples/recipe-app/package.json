@@ -1,0 +1,33 @@
+{
+  "name": "rxdb-sqlite-recipe-app",
+  "version": "1.0.0",
+  "description": "Recipe app using RxDB with SQLite adapter",
+  "private": true,
+  "scripts": {
+    "fetch": "node fetch-recipes.js",
+    "start": "node recipe-app.js",
+    "normalize": "node normalize-recipes-enhanced.js",
+    "store": "node rxdb-recipe-store.js",
+    "sqlite": "node sqlite-recipe-store.js",
+    "adapter": "node use-recipe-adapter.js",
+    "rxdb": "node use-rxdb-adapter.js",
+    "api": "node recipe-api-server.js",
+    "dump": "node dumpTables.js",
+    "recreate": "node recreateDatabase.js",
+    "simple-dump": "node simple-dump.js",
+    "populate": "node populate-database.js",
+    "direct-sqlite": "node direct-sqlite.js",
+    "export": "node export-to-json.js",
+    "simple-export": "node simple-export.js"
+  },
+  "dependencies": {
+    "axios": "^1.8.4",
+    "better-sqlite3": "^11.9.1",
+    "rxdb": "^16.11.0",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "~5.7.2"
+  }
+}

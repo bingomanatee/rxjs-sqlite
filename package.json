@@ -1,0 +1,91 @@
+{
+  "name": "@wonderlandlabs/rxjs-sqlite",
+  "version": "0.1.0",
+  "description": "A reactive adapter for SQLite using RxJS, with RxDB adapter support",
+  "type": "module",
+  "main": "dist/rxjs-sqlite.js",
+  "module": "dist/rxjs-sqlite.js",
+  "types": "dist/lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/rxjs-sqlite.js",
+      "require": "./dist/rxjs-sqlite.umd.cjs",
+      "types": "./dist/lib/index.d.ts"
+    },
+    "./rxdb-adapter": {
+      "import": "./dist/rxdb-adapter.js",
+      "require": "./dist/rxdb-adapter.umd.cjs",
+      "types": "./dist/lib/rxdb-adapter/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/rxjs-sqlite.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.build.json && vite build",
+    "build:server": "node build-server.cjs",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "server": "cd server && node recipe-server.cjs",
+    "client": "cd recipe-ui && npm run dev",
+    "start": "./start-recipe-app.sh",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "rxjs",
+    "sqlite",
+    "database",
+    "reactive",
+    "observable",
+    "rxdb",
+    "better-sqlite3",
+    "node",
+    "storage-adapter"
+  ],
+  "author": "David Edelhart <dave@wonderlandlabs.com>",
+  "contributors": [
+    "David Edelhart",
+    "Augment Code AI"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.14.1",
+    "@types/uuid": "^10.0.0",
+    "@vitest/coverage-v8": "^3.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.7.2",
+    "vite": "^6.3.1",
+    "vitest": "^3.1.2"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.0.2",
+    "@mui/material": "^7.0.2",
+    "@wonderlandlabs/atmo-db": "^0.1.1",
+    "axios": "^1.8.4",
+    "better-sqlite3": "^11.9.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.5.1",
+    "rxdb": "^16.11.0",
+    "rxjs": "^7.8.2",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "sqlite3": "^5.1.7",
+    "uuid": "^11.1.0"
+  }
+}

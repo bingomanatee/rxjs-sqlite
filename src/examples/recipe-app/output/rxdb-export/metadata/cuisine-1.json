@@ -1,0 +1,7 @@
+{
+  "id": "cuisine-1",
+  "type": "cuisine",
+  "value": "american",
+  "displayName": "American",
+  "description": "Cuisine from the United States"
+}

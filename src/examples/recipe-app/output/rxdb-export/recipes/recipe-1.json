@@ -1,0 +1,10 @@
+{
+  "id": "recipe-1",
+  "name": "Spaghetti Carbonara",
+  "categoryId": "cat-pasta",
+  "cuisineId": "cuis-italian",
+  "instructions": "Cook pasta. Mix eggs, cheese, and pepper. Combine with pasta and bacon.",
+  "thumbnail": "https://example.com/carbonara.jpg",
+  "createdAt": "2023-01-01T12:00:00Z",
+  "updatedAt": "2023-01-01T12:00:00Z"
+}

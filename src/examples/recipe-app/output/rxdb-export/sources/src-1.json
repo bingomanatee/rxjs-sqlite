@@ -1,0 +1,9 @@
+{
+  "id": "src-1",
+  "recipeId": "recipe-1",
+  "url": "https://example.com/carbonara",
+  "type": "website",
+  "platform": null,
+  "domain": "example.com",
+  "description": "Classic Carbonara Recipe"
+}

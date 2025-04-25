@@ -1,0 +1,965 @@
+[
+  {
+    "id": "d2b35ac5",
+    "recipeId": "52874",
+    "url": "https://www.youtube.com/watch?v=nMyBC9staMU",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Beef and Mustard Pie"
+  },
+  {
+    "id": "eca12a66",
+    "recipeId": "52874",
+    "url": "https://www.bbc.co.uk/food/recipes/beef_and_mustard_pie_58002",
+    "type": "blog",
+    "platform": "www.bbc.co.uk",
+    "domain": "www.bbc.co.uk",
+    "description": "Original recipe for Beef and Mustard Pie"
+  },
+  {
+    "id": "bdb27791",
+    "recipeId": "52878",
+    "url": "https://www.youtube.com/watch?v=ONX74yP6JnI",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Beef and Oyster pie"
+  },
+  {
+    "id": "19430802",
+    "recipeId": "52878",
+    "url": "https://www.bbc.co.uk/food/recipes/beef_and_oyster_pie_65230",
+    "type": "blog",
+    "platform": "www.bbc.co.uk",
+    "domain": "www.bbc.co.uk",
+    "description": "Original recipe for Beef and Oyster pie"
+  },
+  {
+    "id": "d7248c51",
+    "recipeId": "53071",
+    "url": "https://www.youtube.com/watch?v=lNlK8DVhXXA",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Beef Asado"
+  },
+  {
+    "id": "761cd25c",
+    "recipeId": "53071",
+    "url": "https://panlasangpinoy.com/beef-asado/",
+    "type": "website",
+    "platform": "panlasangpinoy.com",
+    "domain": "panlasangpinoy.com",
+    "description": "Original recipe for Beef Asado"
+  },
+  {
+    "id": "fab54bf4",
+    "recipeId": "52904",
+    "url": "https://www.youtube.com/watch?v=SQnr4Z-7rok",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Beef Bourguignon"
+  },
+  {
+    "id": "107ced0d",
+    "recipeId": "52904",
+    "url": "https://www.bbcgoodfood.com/recipes/5032/beef-bourguignon",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Beef Bourguignon"
+  },
+  {
+    "id": "2e2d13b2",
+    "recipeId": "53085",
+    "url": "https://www.youtube.com/watch?v=k9Ez0bUbXKc",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for 15-minute chicken & halloumi burgers"
+  },
+  {
+    "id": "3e7c7270",
+    "recipeId": "53085",
+    "url": "https://www.bbcgoodfood.com/recipes/15-minute-chicken-halloumi-burgers",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for 15-minute chicken & halloumi burgers"
+  },
+  {
+    "id": "b7514d11",
+    "recipeId": "53050",
+    "url": "https://www.youtube.com/watch?v=9ytR28QK6I8",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Ayam Percik"
+  },
+  {
+    "id": "4034fc2c",
+    "recipeId": "53050",
+    "url": "http://www.curiousnut.com/roasted-spiced-chicken-ayam-percik/",
+    "type": "website",
+    "platform": "www.curiousnut.com",
+    "domain": "www.curiousnut.com",
+    "description": "Original recipe for Ayam Percik"
+  },
+  {
+    "id": "3fe0e056",
+    "recipeId": "52940",
+    "url": "https://www.youtube.com/watch?v=_gFB1fkNhXs",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Brown Stew Chicken"
+  },
+  {
+    "id": "8875d7e0",
+    "recipeId": "52940",
+    "url": "http://www.geniuskitchen.com/recipe/authentic-jamaican-brown-stew-chicken-347996",
+    "type": "blog",
+    "platform": "www.geniuskitchen.com",
+    "domain": "www.geniuskitchen.com",
+    "description": "Original recipe for Brown Stew Chicken"
+  },
+  {
+    "id": "50c5482d",
+    "recipeId": "53016",
+    "url": "https://www.youtube.com/watch?v=1WDesu7bUDM",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Chick-Fil-A Sandwich"
+  },
+  {
+    "id": "8f3decd2",
+    "recipeId": "53016",
+    "url": "https://hilahcooking.com/chick-fil-a-copycat/",
+    "type": "website",
+    "platform": "hilahcooking.com",
+    "domain": "hilahcooking.com",
+    "description": "Original recipe for Chick-Fil-A Sandwich"
+  },
+  {
+    "id": "3d4d3b25",
+    "recipeId": "52846",
+    "url": "https://www.youtube.com/watch?v=bXKWu4GojNI",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Chicken & mushroom Hotpot"
+  },
+  {
+    "id": "91d31453",
+    "recipeId": "52846",
+    "url": "https://www.bbcgoodfood.com/recipes/chicken-mushroom-hot-pot",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Chicken & mushroom Hotpot"
+  },
+  {
+    "id": "153a89ee",
+    "recipeId": "53049",
+    "url": "https://www.youtube.com/watch?v=6R8ffRRJcrg",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Apam balik"
+  },
+  {
+    "id": "cbaa8b2f",
+    "recipeId": "53049",
+    "url": "https://www.nyonyacooking.com/recipes/apam-balik~SJ5WuvsDf9WQ",
+    "type": "blog",
+    "platform": "www.nyonyacooking.com",
+    "domain": "www.nyonyacooking.com",
+    "description": "Original recipe for Apam balik"
+  },
+  {
+    "id": "19a372a8",
+    "recipeId": "52893",
+    "url": "https://www.youtube.com/watch?v=4vhcOwVBDO4",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Apple & Blackberry Crumble"
+  },
+  {
+    "id": "94a7be57",
+    "recipeId": "52893",
+    "url": "https://www.bbcgoodfood.com/recipes/778642/apple-and-blackberry-crumble",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Apple & Blackberry Crumble"
+  },
+  {
+    "id": "69bd7608",
+    "recipeId": "52768",
+    "url": "https://www.youtube.com/watch?v=rp8Slv4INLk",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Apple Frangipan Tart"
+  },
+  {
+    "id": "97978f3c",
+    "recipeId": "52767",
+    "url": "https://www.youtube.com/watch?v=1ahpSTf_Pvk",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Bakewell tart"
+  },
+  {
+    "id": "0028a2e4",
+    "recipeId": "52855",
+    "url": "https://www.youtube.com/watch?v=kSKtb2Sv-_U",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Banana Pancakes"
+  },
+  {
+    "id": "f90484cc",
+    "recipeId": "52855",
+    "url": "https://www.bbcgoodfood.com/recipes/banana-pancakes",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Banana Pancakes"
+  },
+  {
+    "id": "2e0d8604",
+    "recipeId": "52769",
+    "url": "https://www.youtube.com/watch?v=UIcuiU1kV8I",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Kapsalon"
+  },
+  {
+    "id": "3a5c55b8",
+    "recipeId": "52974",
+    "url": "https://www.youtube.com/watch?v=u_OSIChzuL0",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Keleya Zaara"
+  },
+  {
+    "id": "16feae55",
+    "recipeId": "52974",
+    "url": "http://allrecipes.co.uk/recipe/43723/keleya-zaara-tunisian-lamb-with-saffron.aspx",
+    "type": "blog",
+    "platform": "allrecipes.co.uk",
+    "domain": "allrecipes.co.uk",
+    "description": "Original recipe for Keleya Zaara"
+  },
+  {
+    "id": "c2d8a20a",
+    "recipeId": "53009",
+    "url": "https://www.youtube.com/watch?v=krR4rhjR75Y",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Lamb and Lemon Souvlaki"
+  },
+  {
+    "id": "da9d8d0a",
+    "recipeId": "53009",
+    "url": "https://www.bbcgoodfood.com/recipes/lamb-lemon-dill-souvlaki",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Lamb and Lemon Souvlaki"
+  },
+  {
+    "id": "a91be6b7",
+    "recipeId": "52877",
+    "url": "https://www.youtube.com/watch?v=NCyPaaUNYUk",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Lamb and Potato pie"
+  },
+  {
+    "id": "67ec29df",
+    "recipeId": "52877",
+    "url": "https://www.bbc.co.uk/food/recipes/lambandpotatopie_83913",
+    "type": "blog",
+    "platform": "www.bbc.co.uk",
+    "domain": "www.bbc.co.uk",
+    "description": "Original recipe for Lamb and Potato pie"
+  },
+  {
+    "id": "139d9268",
+    "recipeId": "52805",
+    "url": "https://www.youtube.com/watch?v=r7SYVSG5nxo",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Lamb Biryani"
+  },
+  {
+    "id": "778378e0",
+    "recipeId": "52805",
+    "url": "http://www.relishthebite.com/restaurant-style-lamb-biryani/",
+    "type": "website",
+    "platform": "www.relishthebite.com",
+    "domain": "www.relishthebite.com",
+    "description": "Original recipe for Lamb Biryani"
+  },
+  {
+    "id": "f6117dc1",
+    "recipeId": "52848",
+    "url": "https://www.youtube.com/watch?v=B0YX0yPX4Wo",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Bean & Sausage Hotpot"
+  },
+  {
+    "id": "84d1a839",
+    "recipeId": "52848",
+    "url": "https://www.bbcgoodfood.com/recipes/339607/bean-and-sausage-hotpot",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Bean & Sausage Hotpot"
+  },
+  {
+    "id": "ba0db9e7",
+    "recipeId": "52939",
+    "url": "https://www.youtube.com/watch?v=bCr3GasJWwE",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Callaloo Jamaican Style"
+  },
+  {
+    "id": "7171556f",
+    "recipeId": "52939",
+    "url": "https://www.africanbites.com/callaloo-jamaican-style/",
+    "type": "website",
+    "platform": "www.africanbites.com",
+    "domain": "www.africanbites.com",
+    "description": "Original recipe for Callaloo Jamaican Style"
+  },
+  {
+    "id": "d058fb70",
+    "recipeId": "52969",
+    "url": "https://www.youtube.com/watch?v=EHKNu93MSx4",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Chakchouka "
+  },
+  {
+    "id": "30de015b",
+    "recipeId": "52969",
+    "url": "https://www.curiouscuisiniere.com/chakchouka/",
+    "type": "website",
+    "platform": "www.curiouscuisiniere.com",
+    "domain": "www.curiouscuisiniere.com",
+    "description": "Original recipe for Chakchouka "
+  },
+  {
+    "id": "d4cb63bb",
+    "recipeId": "52907",
+    "url": "https://www.youtube.com/watch?v=MHhLJqghY-o",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Duck Confit"
+  },
+  {
+    "id": "f0bfff2a",
+    "recipeId": "52907",
+    "url": "https://www.bbcgoodfood.com/recipes/2085/barneys-confit-of-duck",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Duck Confit"
+  },
+  {
+    "id": "4653478b",
+    "recipeId": "52815",
+    "url": "https://www.youtube.com/watch?v=CrlTS1mJQMA",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for French Lentils With Garlic and Thyme"
+  },
+  {
+    "id": "d75f5a45",
+    "recipeId": "52839",
+    "url": "https://www.youtube.com/watch?v=SC17Mc70Db0",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Chilli prawn linguine"
+  },
+  {
+    "id": "3b1cd7f6",
+    "recipeId": "52839",
+    "url": "https://www.bbcgoodfood.com/recipes/1269/chilli-prawn-linguine",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Chilli prawn linguine"
+  },
+  {
+    "id": "c8c581b3",
+    "recipeId": "53064",
+    "url": "https://www.youtube.com/watch?v=LPPcNPdq_j4",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Fettuccine Alfredo"
+  },
+  {
+    "id": "86d30f3d",
+    "recipeId": "53064",
+    "url": "https://www.delish.com/cooking/recipe-ideas/a55312/best-homemade-fettuccine-alfredo-recipe/",
+    "type": "blog",
+    "platform": "www.delish.com",
+    "domain": "www.delish.com",
+    "description": "Original recipe for Fettuccine Alfredo"
+  },
+  {
+    "id": "766c0ca8",
+    "recipeId": "52835",
+    "url": "https://www.youtube.com/watch?v=FLEnwZvGzOE",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Fettucine alfredo"
+  },
+  {
+    "id": "525eb8a2",
+    "recipeId": "52835",
+    "url": "https://www.bbcgoodfood.com/recipes/fettucine-alfredo",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Fettucine alfredo"
+  },
+  {
+    "id": "175922e2",
+    "recipeId": "52829",
+    "url": "https://www.youtube.com/watch?v=PYq31xLj-DY",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Grilled Mac and Cheese Sandwich"
+  },
+  {
+    "id": "48d0982d",
+    "recipeId": "52829",
+    "url": "https://leitesculinaria.com/103647/recipes-grilled-mac-and-cheese-sandwich.html",
+    "type": "blog",
+    "platform": "leitesculinaria.com",
+    "domain": "leitesculinaria.com",
+    "description": "Original recipe for Grilled Mac and Cheese Sandwich"
+  },
+  {
+    "id": "fb172a72",
+    "recipeId": "52885",
+    "url": "https://www.youtube.com/watch?v=etbJ9ssgsWY",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for  Bubble & Squeak"
+  },
+  {
+    "id": "6fcdad73",
+    "recipeId": "52885",
+    "url": "https://www.bbcgoodfood.com/recipes/164622/bubble-and-squeak",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for  Bubble & Squeak"
+  },
+  {
+    "id": "eb5abb52",
+    "recipeId": "53018",
+    "url": "https://www.youtube.com/watch?v=Oqg_cO4s8ik",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Bigos (Hunters Stew)"
+  },
+  {
+    "id": "3addccf9",
+    "recipeId": "53018",
+    "url": "https://www.allrecipes.com/recipe/138131/bigos-hunters-stew/",
+    "type": "blog",
+    "platform": "www.allrecipes.com",
+    "domain": "www.allrecipes.com",
+    "description": "Original recipe for Bigos (Hunters Stew)"
+  },
+  {
+    "id": "6b24ecb8",
+    "recipeId": "53036",
+    "url": "https://www.youtube.com/watch?v=80W0mCFDIP0",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Boxty Breakfast"
+  },
+  {
+    "id": "6bbf2bac",
+    "recipeId": "53036",
+    "url": "https://www.bbcgoodfood.com/recipes/boxty-bacon-eggs-tomatoes",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Boxty Breakfast"
+  },
+  {
+    "id": "c941c1ca",
+    "recipeId": "53037",
+    "url": "https://www.youtube.com/watch?v=ftn_4mc-65o",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Coddled pork with cider"
+  },
+  {
+    "id": "91f51645",
+    "recipeId": "53037",
+    "url": "https://www.bbcgoodfood.com/recipes/irish-coddled-pork-cider",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Coddled pork with cider"
+  },
+  {
+    "id": "2e10735c",
+    "recipeId": "52959",
+    "url": "https://www.youtube.com/watch?v=xvPR2Tfw5k0",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Baked salmon with fennel & tomatoes"
+  },
+  {
+    "id": "a05c7ffa",
+    "recipeId": "52959",
+    "url": "https://www.bbcgoodfood.com/recipes/7745/baked-salmon-with-fennel-and-tomatoes",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Baked salmon with fennel & tomatoes"
+  },
+  {
+    "id": "68718d13",
+    "recipeId": "52819",
+    "url": "https://www.youtube.com/watch?v=N4EdUt0Ou48",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Cajun spiced fish tacos"
+  },
+  {
+    "id": "6d9e49cc",
+    "recipeId": "52819",
+    "url": "https://realfood.tesco.com/recipes/cajun-spiced-fish-tacos.html",
+    "type": "blog",
+    "platform": "realfood.tesco.com",
+    "domain": "realfood.tesco.com",
+    "description": "Original recipe for Cajun spiced fish tacos"
+  },
+  {
+    "id": "97384620",
+    "recipeId": "52944",
+    "url": "https://www.youtube.com/watch?v=nF6DOtGE6k8",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Escovitch Fish"
+  },
+  {
+    "id": "4183b5cc",
+    "recipeId": "52944",
+    "url": "https://www.africanbites.com/jamaican-escovitched-fish/",
+    "type": "website",
+    "platform": "www.africanbites.com",
+    "domain": "www.africanbites.com",
+    "description": "Original recipe for Escovitch Fish"
+  },
+  {
+    "id": "619ed0ed",
+    "recipeId": "53043",
+    "url": "https://www.youtube.com/watch?v=YXUZHK2PrV8",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Fish fofos"
+  },
+  {
+    "id": "ceaac6eb",
+    "recipeId": "53043",
+    "url": "https://www.olivemagazine.com/recipes/fish-and-seafood/fish-fofos/",
+    "type": "blog",
+    "platform": "www.olivemagazine.com",
+    "domain": "www.olivemagazine.com",
+    "description": "Original recipe for Fish fofos"
+  },
+  {
+    "id": "a2a71356",
+    "recipeId": "52802",
+    "url": "https://www.youtube.com/watch?v=2sX4fCgg-UI",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Fish pie"
+  },
+  {
+    "id": "8f5e762a",
+    "recipeId": "53080",
+    "url": "https://www.youtube.com/watch?v=GsB8ZI5vREA",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Blini Pancakes"
+  },
+  {
+    "id": "55d33a26",
+    "recipeId": "53080",
+    "url": "https://www.thespruceeats.com/russian-blini-recipe-buckwheat-pancakes-1136797",
+    "type": "blog",
+    "platform": "www.thespruceeats.com",
+    "domain": "www.thespruceeats.com",
+    "description": "Original recipe for Blini Pancakes"
+  },
+  {
+    "id": "cc37fbc9",
+    "recipeId": "52914",
+    "url": "https://www.youtube.com/watch?v=gcXPruv1Mjg",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Boulangère Potatoes"
+  },
+  {
+    "id": "8aadb90e",
+    "recipeId": "52914",
+    "url": "https://www.bbcgoodfood.com/recipes/5056/boulangre-potatoes",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Boulangère Potatoes"
+  },
+  {
+    "id": "60a090ee",
+    "recipeId": "52913",
+    "url": "https://www.youtube.com/watch?v=FzNPPD8lbWg",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Brie wrapped in prosciutto & brioche"
+  },
+  {
+    "id": "0c0a083f",
+    "recipeId": "52913",
+    "url": "https://www.bbcgoodfood.com/recipes/1803634/brie-wrapped-in-prosciutto-and-brioche",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Brie wrapped in prosciutto & brioche"
+  },
+  {
+    "id": "19851ed1",
+    "recipeId": "53060",
+    "url": "https://www.youtube.com/watch?v=YsJXZwE5pdY",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Burek"
+  },
+  {
+    "id": "7b293799",
+    "recipeId": "53060",
+    "url": "https://www.visit-croatia.co.uk/croatian-cuisine/croatian-recipes/",
+    "type": "blog",
+    "platform": "www.visit-croatia.co.uk",
+    "domain": "www.visit-croatia.co.uk",
+    "description": "Original recipe for Burek"
+  },
+  {
+    "id": "5c393f2a",
+    "recipeId": "52977",
+    "url": "https://www.youtube.com/watch?v=VVnZd8A84z4",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Corba"
+  },
+  {
+    "id": "2c42be3a",
+    "recipeId": "52977",
+    "url": "https://findingtimeforcooking.com/main-dishes/red-lentil-soup-corba/",
+    "type": "website",
+    "platform": "findingtimeforcooking.com",
+    "domain": "findingtimeforcooking.com",
+    "description": "Original recipe for Corba"
+  },
+  {
+    "id": "09a15ff3",
+    "recipeId": "52842",
+    "url": "https://www.youtube.com/watch?v=_HgVLpmNxTY",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Broccoli & Stilton soup"
+  },
+  {
+    "id": "f0ecd3e3",
+    "recipeId": "52842",
+    "url": "https://www.bbcgoodfood.com/recipes/1940679/broccoli-and-stilton-soup",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Broccoli & Stilton soup"
+  },
+  {
+    "id": "c97728a9",
+    "recipeId": "52840",
+    "url": "https://www.youtube.com/watch?v=fEN_fm6kX6k",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Clam chowder"
+  },
+  {
+    "id": "d1dbe5fc",
+    "recipeId": "52840",
+    "url": "https://www.bbcgoodfood.com/recipes/clam-chowder",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Clam chowder"
+  },
+  {
+    "id": "1b09f661",
+    "recipeId": "52779",
+    "url": "https://www.youtube.com/watch?v=UhQPwO4uymo",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Cream Cheese Tart"
+  },
+  {
+    "id": "9b162dd0",
+    "recipeId": "52779",
+    "url": "https://www.instagram.com/p/BHyuMZ1hZX0",
+    "type": "social_media",
+    "platform": "www.instagram.com",
+    "domain": "www.instagram.com",
+    "description": "Original recipe for Cream Cheese Tart"
+  },
+  {
+    "id": "fcaa1b30",
+    "recipeId": "52841",
+    "url": "https://www.youtube.com/watch?v=lBhwjjUiFk4",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Creamy Tomato Soup"
+  },
+  {
+    "id": "90911949",
+    "recipeId": "52841",
+    "url": "https://www.bbcgoodfood.com/recipes/2604646/creamy-tomato-soup",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Creamy Tomato Soup"
+  },
+  {
+    "id": "31f5cf63",
+    "recipeId": "52942",
+    "url": "https://www.youtube.com/watch?v=H5SmjR-fxUs",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Roast fennel and aubergine paella"
+  },
+  {
+    "id": "a4cf5f1f",
+    "recipeId": "52942",
+    "url": "https://www.homestylemag.co.uk/recipe/517/main-courses/roast-fennel-and-aubergine-paella",
+    "type": "blog",
+    "platform": "www.homestylemag.co.uk",
+    "domain": "www.homestylemag.co.uk",
+    "description": "Original recipe for Roast fennel and aubergine paella"
+  },
+  {
+    "id": "24ce933d",
+    "recipeId": "52794",
+    "url": "https://www.youtube.com/watch?v=C3pAgB7pync",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Vegan Chocolate Cake"
+  },
+  {
+    "id": "e22ad2df",
+    "recipeId": "52775",
+    "url": "https://www.youtube.com/watch?v=VU8cXvlGbvc",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Vegan Lasagna"
+  },
+  {
+    "id": "4969d6bf",
+    "recipeId": "52807",
+    "url": "https://www.youtube.com/watch?v=-84Zz2EP4h4",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Baingan Bharta"
+  },
+  {
+    "id": "8bb15664",
+    "recipeId": "52807",
+    "url": "http://www.vegrecipesofindia.com/baingan-bharta-recipe-punjabi-baingan-bharta-recipe/",
+    "type": "blog",
+    "platform": "www.vegrecipesofindia.com",
+    "domain": "www.vegrecipesofindia.com",
+    "description": "Original recipe for Baingan Bharta"
+  },
+  {
+    "id": "8a55c8df",
+    "recipeId": "53078",
+    "url": "https://www.youtube.com/watch?v=6CXgPVw_-0g",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Beetroot Soup (Borscht)"
+  },
+  {
+    "id": "0841a874",
+    "recipeId": "53078",
+    "url": "https://natashaskitchen.com/classic-russian-borscht-recipe/",
+    "type": "blog",
+    "platform": "natashaskitchen.com",
+    "domain": "natashaskitchen.com",
+    "description": "Original recipe for Beetroot Soup (Borscht)"
+  },
+  {
+    "id": "b27542e8",
+    "recipeId": "53077",
+    "url": "https://www.youtube.com/watch?v=lTjlbqGc_Y8",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Cabbage Soup (Shchi)"
+  },
+  {
+    "id": "b6ccdd52",
+    "recipeId": "53077",
+    "url": "https://www.thespruceeats.com/traditional-russian-cabbage-soup-shchi-recipe-1135534",
+    "type": "blog",
+    "platform": "www.thespruceeats.com",
+    "domain": "www.thespruceeats.com",
+    "description": "Original recipe for Cabbage Soup (Shchi)"
+  },
+  {
+    "id": "7fda3ee0",
+    "recipeId": "52870",
+    "url": "https://www.youtube.com/watch?v=LGY3V7EGpT0",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Chickpea Fajitas"
+  },
+  {
+    "id": "99ab21cf",
+    "recipeId": "52870",
+    "url": "https://www.bbcgoodfood.com/recipes/chickpea-fajitas",
+    "type": "blog",
+    "platform": "www.bbcgoodfood.com",
+    "domain": "www.bbcgoodfood.com",
+    "description": "Original recipe for Chickpea Fajitas"
+  },
+  {
+    "id": "7fbcc340",
+    "recipeId": "53072",
+    "url": "https://www.youtube.com/watch?v=4mINk5d2hto",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Crispy Eggplant"
+  },
+  {
+    "id": "562d05e8",
+    "recipeId": "53072",
+    "url": "https://yummyfood.ph/recipe/crispiest-fried-eggplant/",
+    "type": "blog",
+    "platform": "yummyfood.ph",
+    "domain": "yummyfood.ph",
+    "description": "Original recipe for Crispy Eggplant"
+  },
+  {
+    "id": "50b92d5a",
+    "recipeId": "52965",
+    "url": "https://www.youtube.com/watch?v=BoD0TIO9nE4",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Breakfast Potatoes"
+  },
+  {
+    "id": "045c94d1",
+    "recipeId": "52965",
+    "url": "http://www.vodkaandbiscuits.com/2014/03/06/bangin-breakfast-potatoes/",
+    "type": "website",
+    "platform": "www.vodkaandbiscuits.com",
+    "domain": "www.vodkaandbiscuits.com",
+    "description": "Original recipe for Breakfast Potatoes"
+  },
+  {
+    "id": "f053ac44",
+    "recipeId": "52895",
+    "url": "https://www.youtube.com/watch?v=FXjYU2Ensck",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for English Breakfast"
+  },
+  {
+    "id": "d60bc80f",
+    "recipeId": "52895",
+    "url": "https://www.bbc.co.uk/food/recipes/stressfreefullenglis_67721",
+    "type": "blog",
+    "platform": "www.bbc.co.uk",
+    "domain": "www.bbc.co.uk",
+    "description": "Original recipe for English Breakfast"
+  },
+  {
+    "id": "f053ac44",
+    "recipeId": "52896",
+    "url": "https://www.youtube.com/watch?v=FXjYU2Ensck",
+    "type": "video",
+    "platform": "YouTube",
+    "domain": "www.youtube.com",
+    "description": "Video tutorial for Full English Breakfast"
+  },
+  {
+    "id": "d60bc80f",
+    "recipeId": "52896",
+    "url": "https://www.bbc.co.uk/food/recipes/stressfreefullenglis_67721",
+    "type": "blog",
+    "platform": "www.bbc.co.uk",
+    "domain": "www.bbc.co.uk",
+    "description": "Original recipe for Full English Breakfast"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "id": "53060",
+  "name": "Burek",
+  "categoryId": "9c62ad1f",
+  "cuisineId": "340f4437",
+  "instructions": "Fry the finely chopped onions and minced meat in [INGREDIENT:c5af0543:singular]. Add the [INGREDIENT:ceb20772:singular] and [INGREDIENT:b3f952d5:singular]. Grease a round baking tray and put a layer of pastry in it. Cover with a thin layer of filling and cover this with another layer of [INGREDIENT:d0410ada:singular] which must be well coated in [INGREDIENT:c5af0543:singular]. Put another layer of filling and cover with pastry. When you have five or six layers, cover with [INGREDIENT:d0410ada:singular], bake at 200ºC/392ºF for half an hour and cut in quarters and serve.",
+  "originalInstructions": "Fry the finely chopped onions and minced meat in oil. Add the salt and pepper. Grease a round baking tray and put a layer of pastry in it. Cover with a thin layer of filling and cover this with another layer of filo pastry which must be well coated in oil. Put another layer of filling and cover with pastry. When you have five or six layers, cover with filo pastry, bake at 200ºC/392ºF for half an hour and cut in quarters and serve.",
+  "thumbnail": "https://www.themealdb.com/images/media/meals/tkxquw1628771028.jpg",
+  "createdAt": "2025-04-23T02:48:21.437Z",
+  "updatedAt": "2025-04-23T02:48:21.437Z"
+}

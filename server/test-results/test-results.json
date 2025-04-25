@@ -1,0 +1,370 @@
+{
+  "summary": {
+    "totalRecipes": 10,
+    "recipesWithSteps": 5,
+    "recipesWithIngredients": 5,
+    "averageStepsPerRecipe": 5.2,
+    "averageIngredientsPerRecipe": 9.8,
+    "testsPassed": 6,
+    "testsFailed": 0
+  },
+  "recipeListTest": {
+    "status": "passed",
+    "message": "Successfully retrieved 10 recipes",
+    "sampleRecipes": [
+      {
+        "id": "recipe-1",
+        "name": "Spaghetti Carbonara",
+        "description": "Cook pasta. Mix eggs, cheese, and pepper. Combine with pasta and bacon.",
+        "thumbnail": "https://example.com/carbonara.jpg",
+        "categoryId": "cat-pasta",
+        "cuisineId": "cuis-italian"
+      },
+      {
+        "id": "recipe-2",
+        "name": "Chicken Curry",
+        "description": "Cook chicken with curry sauce and serve with rice.",
+        "thumbnail": "https://example.com/curry.jpg",
+        "categoryId": "cat-curry",
+        "cuisineId": "cuis-indian"
+      },
+      {
+        "id": "52767",
+        "name": "Bakewell tart",
+        "description": "To make the pastry, measure the flour into a bowl and rub in the butter with your fingertips until t...",
+        "thumbnail": "https://www.themealdb.com/images/media/meals/wyrqqq1468233628.jpg",
+        "categoryId": "eabbf14c",
+        "cuisineId": "9e94c370"
+      }
+    ]
+  },
+  "detailedTests": [
+    {
+      "recipeId": "52769",
+      "recipeName": "Kapsalon",
+      "status": "passed",
+      "hasSteps": true,
+      "hasIngredients": true,
+      "stepCount": 6,
+      "ingredientCount": 8,
+      "sampleSteps": [
+        {
+          "id": "generated-step-52769-1",
+          "recipeId": "52769",
+          "stepNumber": 1,
+          "instruction": "Cut the meat into strips. Heat oil in a pan and fry the strips for 6 minutes until it's ready.",
+          "duration": 0,
+          "image": null
+        },
+        {
+          "id": "generated-step-52769-2",
+          "recipeId": "52769",
+          "stepNumber": 2,
+          "instruction": "Bake the fries until golden brown in a deep fryrer. When ready transfer to a backing dish. Make sure the fries are spread over the whole dish.",
+          "duration": 0,
+          "image": null
+        }
+      ],
+      "sampleIngredients": [
+        {
+          "id": "52769_3dbb06da",
+          "recipeId": "52769",
+          "ingredientId": "3dbb06da",
+          "originalMeasure": "250 Grams",
+          "quantity": 250,
+          "unit": "G",
+          "additionalInfo": "rams",
+          "stepNumber": null,
+          "ingredient": {
+            "id": "3dbb06da",
+            "name": "Fries",
+            "isPlural": true,
+            "category": "other",
+            "description": null,
+            "nutritionalInfo": null,
+            "substitutes": []
+          }
+        },
+        {
+          "id": "52769_f70b98a8",
+          "recipeId": "52769",
+          "ingredientId": "f70b98a8",
+          "originalMeasure": "500 Grams",
+          "quantity": 500,
+          "unit": "G",
+          "additionalInfo": "rams",
+          "stepNumber": null,
+          "ingredient": {
+            "id": "f70b98a8",
+            "name": "Doner Meat",
+            "isPlural": false,
+            "category": "other",
+            "description": null,
+            "nutritionalInfo": null,
+            "substitutes": []
+          }
+        }
+      ]
+    },
+    {
+      "recipeId": "52768",
+      "recipeName": "Apple Frangipan Tart",
+      "status": "passed",
+      "hasSteps": true,
+      "hasIngredients": true,
+      "stepCount": 7,
+      "ingredientCount": 9,
+      "sampleSteps": [
+        {
+          "id": "generated-step-52768-1",
+          "recipeId": "52768",
+          "stepNumber": 1,
+          "instruction": "Preheat the oven to 200C/180C Fan/Gas 6.",
+          "duration": 0,
+          "image": null
+        },
+        {
+          "id": "generated-step-52768-2",
+          "recipeId": "52768",
+          "stepNumber": 2,
+          "instruction": "Put the biscuits in a large re-sealable freezer bag and bash with a rolling pin into fine crumbs. Melt the butter in a small pan, then add the biscuit crumbs and stir until coated with butter. Tip into the tart tin and, using the back of a spoon, press over the base and sides of the tin to give an even layer. Chill in the fridge while you make the filling.",
+          "duration": 0,
+          "image": null
+        }
+      ],
+      "sampleIngredients": [
+        {
+          "id": "52768_cb72f917",
+          "recipeId": "52768",
+          "ingredientId": "cb72f917",
+          "originalMeasure": "175g/6oz",
+          "quantity": 175,
+          "unit": "g",
+          "additionalInfo": "/6oz",
+          "stepNumber": null,
+          "ingredient": {
+            "id": "cb72f917",
+            "name": "digestive biscuits",
+            "isPlural": true,
+            "category": "other",
+            "description": null,
+            "nutritionalInfo": null,
+            "substitutes": []
+          }
+        },
+        {
+          "id": "52768_d74fdde2",
+          "recipeId": "52768",
+          "ingredientId": "d74fdde2",
+          "originalMeasure": "75g/3oz",
+          "quantity": 75,
+          "unit": "g",
+          "additionalInfo": "/3oz",
+          "stepNumber": null,
+          "ingredient": {
+            "id": "d74fdde2",
+            "name": "Butter",
+            "isPlural": false,
+            "category": "dairy",
+            "description": null,
+            "nutritionalInfo": null,
+            "substitutes": []
+          }
+        }
+      ]
+    },
+    {
+      "recipeId": "52794",
+      "recipeName": "Vegan Chocolate Cake",
+      "status": "passed",
+      "hasSteps": true,
+      "hasIngredients": true,
+      "stepCount": 1,
+      "ingredientCount": 8,
+      "sampleSteps": [
+        {
+          "id": "generated-step-52794-1",
+          "recipeId": "52794",
+          "stepNumber": 1,
+          "instruction": "Simply mix all dry ingredients with wet ingredients and blend altogether. Bake for 45 min on 180 degrees. Decorate with some melted vegan chocolate",
+          "duration": 0,
+          "image": null
+        }
+      ],
+      "sampleIngredients": [
+        {
+          "id": "52794_1de1d7d7",
+          "recipeId": "52794",
+          "ingredientId": "1de1d7d7",
+          "originalMeasure": "1 1/4 cup",
+          "quantity": 0.25,
+          "unit": "cup",
+          "additionalInfo": null,
+          "stepNumber": null,
+          "ingredient": {
+            "id": "1de1d7d7",
+            "name": "Self-raising Flour",
+            "isPlural": false,
+            "category": "grain",
+            "description": null,
+            "nutritionalInfo": null,
+            "substitutes": []
+          }
+        },
+        {
+          "id": "52794_5ddad477",
+          "recipeId": "52794",
+          "ingredientId": "5ddad477",
+          "originalMeasure": "1/2 cup",
+          "quantity": 0.5,
+          "unit": "cup",
+          "additionalInfo": null,
+          "stepNumber": null,
+          "ingredient": {
+            "id": "5ddad477",
+            "name": "coco sugar",
+            "isPlural": false,
+            "category": "sweetener",
+            "description": null,
+            "nutritionalInfo": null,
+            "substitutes": []
+          }
+        }
+      ]
+    },
+    {
+      "recipeId": "52802",
+      "recipeName": "Fish pie",
+      "status": "passed",
+      "hasSteps": true,
+      "hasIngredients": true,
+      "stepCount": 5,
+      "ingredientCount": 14,
+      "sampleSteps": [
+        {
+          "id": "generated-step-52802-1",
+          "recipeId": "52802",
+          "stepNumber": 1,
+          "instruction": "01.Put the potatoes in a large pan of cold salted water and bring to the boil. Lower the heat, cover, then simmer gently for 15 minutes until tender. Drain, then return to the pan over a low heat for 30 seconds to drive off any excess water. Mash with 1 tbsp olive oil, then season.",
+          "duration": 0,
+          "image": null
+        },
+        {
+          "id": "generated-step-52802-2",
+          "recipeId": "52802",
+          "stepNumber": 2,
+          "instruction": "02.Meanwhile put the milk in a large sauté pan, add the fish and bring to the boil. Remove from the heat, cover and stand for 3 minutes. Remove the fish (reserving the milk) and pat dry with kitchen paper, then gently flake into an ovenproof dish, discarding the skin and any bones.",
+          "duration": 0,
+          "image": null
+        }
+      ],
+      "sampleIngredients": [
+        {
+          "id": "52802_90dfaf1d",
+          "recipeId": "52802",
+          "ingredientId": "90dfaf1d",
+          "originalMeasure": "900g",
+          "quantity": 900,
+          "unit": "g",
+          "additionalInfo": null,
+          "stepNumber": null,
+          "ingredient": {
+            "id": "90dfaf1d",
+            "name": "Floury Potatoes",
+            "isPlural": true,
+            "category": "vegetable",
+            "description": null,
+            "nutritionalInfo": null,
+            "substitutes": []
+          }
+        },
+        {
+          "id": "52802_6e95889f",
+          "recipeId": "52802",
+          "ingredientId": "6e95889f",
+          "originalMeasure": "2 tbsp",
+          "quantity": 2,
+          "unit": "tbsp",
+          "additionalInfo": null,
+          "stepNumber": null,
+          "ingredient": {
+            "id": "6e95889f",
+            "name": "Olive Oil",
+            "isPlural": false,
+            "category": "oil",
+            "description": null,
+            "nutritionalInfo": null,
+            "substitutes": []
+          }
+        }
+      ]
+    },
+    {
+      "recipeId": "52767",
+      "recipeName": "Bakewell tart",
+      "status": "passed",
+      "hasSteps": true,
+      "hasIngredients": true,
+      "stepCount": 7,
+      "ingredientCount": 10,
+      "sampleSteps": [
+        {
+          "id": "generated-step-52767-1",
+          "recipeId": "52767",
+          "stepNumber": 1,
+          "instruction": "To make the pastry, measure the flour into a bowl and rub in the butter with your fingertips until the mixture resembles fine breadcrumbs. Add the water, mixing to form a soft dough.",
+          "duration": 0,
+          "image": null
+        },
+        {
+          "id": "generated-step-52767-2",
+          "recipeId": "52767",
+          "stepNumber": 2,
+          "instruction": "Roll out the dough on a lightly floured work surface and use to line a 20cm/8in flan tin. Leave in the fridge to chill for 30 minutes.",
+          "duration": 0,
+          "image": null
+        }
+      ],
+      "sampleIngredients": [
+        {
+          "id": "52767_51e4421d",
+          "recipeId": "52767",
+          "ingredientId": "51e4421d",
+          "originalMeasure": "175g/6oz",
+          "quantity": 175,
+          "unit": "g",
+          "additionalInfo": "/6oz",
+          "stepNumber": null,
+          "ingredient": {
+            "id": "51e4421d",
+            "name": "Plain Flour",
+            "isPlural": false,
+            "category": "grain",
+            "description": null,
+            "nutritionalInfo": null,
+            "substitutes": []
+          }
+        },
+        {
+          "id": "52767_38db12aa",
+          "recipeId": "52767",
+          "ingredientId": "38db12aa",
+          "originalMeasure": "75g/2½oz",
+          "quantity": 75,
+          "unit": "g",
+          "additionalInfo": "/2½oz",
+          "stepNumber": null,
+          "ingredient": {
+            "id": "38db12aa",
+            "name": "chilled butter",
+            "isPlural": false,
+            "category": "dairy",
+            "description": null,
+            "nutritionalInfo": null,
+            "substitutes": []
+          }
+        }
+      ]
+    }
+  ]
+}

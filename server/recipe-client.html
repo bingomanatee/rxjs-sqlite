@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #e67e22;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-container input {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 16px;
+        }
+
+        .search-container button {
+            padding: 10px 15px;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .recipes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .recipe-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .recipe-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .recipe-content {
+            padding: 20px;
+        }
+
+        .recipe-title {
+            margin-top: 0;
+            color: #e67e22;
+        }
+
+        .recipe-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .recipe-instructions {
+            margin-bottom: 15px;
+        }
+
+        .view-details-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #e67e22;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .recipe-details {
+            display: none;
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .recipe-details.active {
+            display: block;
+        }
+
+        .recipe-details-header {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .recipe-details-image {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 30px;
+        }
+
+        .recipe-details-info {
+            flex: 1;
+        }
+
+        .recipe-details-title {
+            margin-top: 0;
+            color: #e67e22;
+        }
+
+        .recipe-details-meta {
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .recipe-details-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .recipe-details-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .recipe-details-tab.active {
+            border-bottom: 2px solid #e67e22;
+            font-weight: bold;
+        }
+
+        .recipe-details-content {
+            display: none;
+        }
+
+        .recipe-details-content.active {
+            display: block;
+        }
+
+        .ingredients-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .ingredient-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .ingredient-item:last-child {
+            border-bottom: none;
+        }
+
+        .steps-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .step-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+        }
+
+        .step-item:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e67e22;
+            margin-right: 15px;
+            min-width: 30px;
+        }
+
+        .step-instruction {
+            flex: 1;
+        }
+
+        .step-duration {
+            font-size: 14px;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .back-to-recipes {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #e67e22;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #777;
+        }
+
+        .error {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Recipe App</h1>
+        <p>Powered by RxDB with SQLite Adapter</p>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search recipes...">
+        <button id="search-button">Search</button>
+    </div>
+
+    <div id="recipes-view">
+        <div id="recipes-container" class="recipes-container">
+            <div class="loading">Loading recipes...</div>
+        </div>
+    </div>
+
+    <div id="recipe-details" class="recipe-details">
+        <a href="#" class="back-to-recipes" id="back-button">← Back to recipes</a>
+        <div class="recipe-details-header">
+            <img src="" alt="" class="recipe-details-image" id="details-image">
+            <div class="recipe-details-info">
+                <h2 class="recipe-details-title" id="details-title"></h2>
+                <div class="recipe-details-meta" id="details-meta"></div>
+                <p class="recipe-details-description" id="details-description"></p>
+            </div>
+        </div>
+
+        <div class="recipe-details-tabs">
+            <div class="recipe-details-tab active" data-tab="ingredients">Ingredients</div>
+            <div class="recipe-details-tab" data-tab="steps">Steps</div>
+        </div>
+
+        <div class="recipe-details-content active" id="ingredients-content">
+            <ul class="ingredients-list" id="ingredients-list"></ul>
+        </div>
+
+        <div class="recipe-details-content" id="steps-content">
+            <ul class="steps-list" id="steps-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        // API URL
+        const API_URL = 'http://localhost:3001/api';
+
+        // DOM Elements
+        const recipesContainer = document.getElementById('recipes-container');
+        const recipeDetails = document.getElementById('recipe-details');
+        const recipesView = document.getElementById('recipes-view');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const backButton = document.getElementById('back-button');
+        const detailsImage = document.getElementById('details-image');
+        const detailsTitle = document.getElementById('details-title');
+        const detailsMeta = document.getElementById('details-meta');
+        const detailsDescription = document.getElementById('details-description');
+        const ingredientsList = document.getElementById('ingredients-list');
+        const stepsList = document.getElementById('steps-list');
+        const tabs = document.querySelectorAll('.recipe-details-tab');
+        const tabContents = document.querySelectorAll('.recipe-details-content');
+
+        // State
+        let recipes = [];
+        let categories = {};
+        let cuisines = {};
+
+        // Fetch all recipes with pagination
+        async function fetchRecipes(page = 1, limit = 30) {
+            try {
+                recipesContainer.innerHTML = '<div class="loading">Loading recipes...</div>';
+
+                const response = await fetch(`${API_URL}/recipes?page=${page}&limit=${limit}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch recipes');
+                }
+
+                const data = await response.json();
+                recipes = data.recipes;
+
+                // Store pagination info for potential use
+                const pagination = data.pagination;
+                console.log('Pagination info:', pagination);
+
+                await fetchMetadata();
+                renderRecipes(recipes);
+            } catch (error) {
+                recipesContainer.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                console.error('Error fetching recipes:', error);
+            }
+        }
+
+        // Fetch metadata (categories, cuisines)
+        async function fetchMetadata() {
+            try {
+                const response = await fetch(`${API_URL}/metadata`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch metadata');
+                }
+
+                const metadata = await response.json();
+
+                // Organize metadata by type and id
+                metadata.forEach(item => {
+                    if (item.type === 'category') {
+                        categories[item.id] = item;
+                    } else if (item.type === 'cuisine') {
+                        cuisines[item.id] = item;
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching metadata:', error);
+            }
+        }
+
+        // Render recipes
+        function renderRecipes(recipesToRender) {
+            if (recipesToRender.length === 0) {
+                recipesContainer.innerHTML = '<div class="error">No recipes found</div>';
+                return;
+            }
+
+            recipesContainer.innerHTML = '';
+
+            recipesToRender.forEach(recipe => {
+                const category = categories[recipe.categoryId] ? categories[recipe.categoryId].displayName : '';
+                const cuisine = cuisines[recipe.cuisineId] ? cuisines[recipe.cuisineId].displayName : '';
+
+                const recipeCard = document.createElement('div');
+                recipeCard.className = 'recipe-card';
+                recipeCard.innerHTML = `
+                    <img src="${recipe.thumbnail}" alt="${recipe.name}" class="recipe-image">
+                    <div class="recipe-content">
+                        <h3 class="recipe-title">${recipe.name}</h3>
+                        <div class="recipe-meta">
+                            <span>${category}</span>
+                            <span>${cuisine}</span>
+                        </div>
+                        <p class="recipe-instructions">${recipe.instructions.substring(0, 100)}${recipe.instructions.length > 100 ? '...' : ''}</p>
+                        <button class="view-details-btn" data-id="${recipe.id}">View Details</button>
+                    </div>
+                `;
+
+                recipesContainer.appendChild(recipeCard);
+
+                // Add event listener to view details button
+                const viewDetailsBtn = recipeCard.querySelector('.view-details-btn');
+                viewDetailsBtn.addEventListener('click', () => {
+                    showRecipeDetails(recipe.id);
+                });
+            });
+        }
+
+        // Show recipe details
+        async function showRecipeDetails(recipeId) {
+            try {
+                // Fetch the full recipe details from the API
+                const response = await fetch(`${API_URL}/recipes/${recipeId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch recipe details');
+                }
+
+                const fullRecipe = await response.json();
+
+                // Update details view with recipe info
+                detailsImage.src = fullRecipe.thumbnail;
+                detailsImage.alt = fullRecipe.name;
+                detailsTitle.textContent = fullRecipe.name;
+
+                // Get category and cuisine info
+                const category = fullRecipe.category ? fullRecipe.category.displayName : '';
+                const cuisine = fullRecipe.cuisine ? fullRecipe.cuisine.displayName : '';
+                detailsMeta.textContent = `${category} • ${cuisine}`;
+                detailsDescription.textContent = fullRecipe.instructions;
+
+                // Render ingredients and steps from the full recipe data
+                renderIngredients(fullRecipe.ingredients);
+                renderSteps(fullRecipe.steps);
+
+                // Show details view
+                recipesView.style.display = 'none';
+                recipeDetails.classList.add('active');
+
+                // Reset to ingredients tab
+                tabs.forEach(tab => tab.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.querySelector('[data-tab="ingredients"]').classList.add('active');
+                document.getElementById('ingredients-content').classList.add('active');
+            } catch (error) {
+                console.error('Error showing recipe details:', error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        // Render ingredients
+        function renderIngredients(recipeIngredients) {
+            ingredientsList.innerHTML = '';
+
+            if (recipeIngredients.length === 0) {
+                ingredientsList.innerHTML = '<li class="ingredient-item">No ingredients found</li>';
+                return;
+            }
+
+            recipeIngredients.forEach(item => {
+                const ingredient = item.ingredient;
+                const li = document.createElement('li');
+                li.className = 'ingredient-item';
+
+                let measureText = item.originalMeasure;
+                if (item.quantity) {
+                    measureText = `${item.quantity}${item.unit ? ' ' + item.unit : ''}`;
+                }
+
+                li.innerHTML = `
+                    <strong>${measureText}</strong> ${ingredient.name}
+                    ${item.additionalInfo ? `<em>(${item.additionalInfo})</em>` : ''}
+                `;
+
+                ingredientsList.appendChild(li);
+            });
+        }
+
+        // Render steps
+        function renderSteps(recipeSteps) {
+            stepsList.innerHTML = '';
+
+            if (recipeSteps.length === 0) {
+                stepsList.innerHTML = '<li class="step-item">No steps found</li>';
+                return;
+            }
+
+            // Sort steps by step number
+            recipeSteps.sort((a, b) => a.stepNumber - b.stepNumber);
+
+            recipeSteps.forEach(step => {
+                const li = document.createElement('li');
+                li.className = 'step-item';
+
+                const durationMinutes = Math.floor(step.duration / 60);
+                const durationText = durationMinutes > 0 ? `${durationMinutes} min` : `${step.duration} sec`;
+
+                li.innerHTML = `
+                    <div class="step-number">${step.stepNumber}</div>
+                    <div class="step-content">
+                        <div class="step-instruction">${step.instruction}</div>
+                        <div class="step-duration">⏱️ ${durationText}</div>
+                    </div>
+                `;
+
+                stepsList.appendChild(li);
+            });
+        }
+
+        // Search recipes with pagination
+        async function searchRecipes(query, page = 1, limit = 30) {
+            try {
+                recipesContainer.innerHTML = '<div class="loading">Searching recipes...</div>';
+
+                const response = await fetch(`${API_URL}/search?query=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
+                if (!response.ok) {
+                    throw new Error('Failed to search recipes');
+                }
+
+                const data = await response.json();
+                recipes = data.recipes;
+
+                // Store pagination info for potential use
+                const pagination = data.pagination;
+                console.log('Search pagination info:', pagination);
+
+                renderRecipes(recipes);
+            } catch (error) {
+                recipesContainer.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                console.error('Error searching recipes:', error);
+            }
+        }
+
+        // Event Listeners
+        searchButton.addEventListener('click', () => {
+            const query = searchInput.value.trim();
+            if (query) {
+                searchRecipes(query);
+            } else {
+                fetchRecipes();
+            }
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchButton.click();
+            }
+        });
+
+        backButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            recipeDetails.classList.remove('active');
+            recipesView.style.display = 'block';
+        });
+
+        // Tab switching
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update active content
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById(`${tabName}-content`).classList.add('active');
+            });
+        });
+
+        // Initialize
+        fetchRecipes();
+    </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+[
+  {
+    "id": "ebe86682",
+    "name": "kg",
+    "abbreviation": "kg",
+    "type": "weight"
+  },
+  {
+    "id": "9830e1f8",
+    "name": "ml",
+    "abbreviation": "ml",
+    "type": "volume"
+  },
+  {
+    "id": "eb7fef10",
+    "name": "sprig",
+    "abbreviation": "spr",
+    "type": "weight"
+  },
+  {
+    "id": "b2f5ff47",
+    "name": "g",
+    "abbreviation": "g",
+    "type": "weight"
+  },
+  {
+    "id": "01a71ccd",
+    "name": "pinch",
+    "abbreviation": "pin",
+    "type": "small_amount"
+  },
+  {
+    "id": "f5f005d4",
+    "name": "clove",
+    "abbreviation": "clo",
+    "type": "volume"
+  },
+  {
+    "id": "62bc2138",
+    "name": "ounce",
+    "abbreviation": "oun",
+    "type": "weight"
+  },
+  {
+    "id": "f3f58ee4",
+    "name": "cup",
+    "abbreviation": "cup",
+    "type": "volume"
+  },
+  {
+    "id": "fbaa3c35",
+    "name": "tablespoon",
+    "abbreviation": "tab",
+    "type": "volume"
+  },
+  {
+    "id": "2dcb56dc",
+    "name": "oz",
+    "abbreviation": "oz",
+    "type": "volume"
+  },
+  {
+    "id": "26403ec6",
+    "name": "lb",
+    "abbreviation": "lb",
+    "type": "volume"
+  },
+  {
+    "id": "902bcfe5",
+    "name": "tsp",
+    "abbreviation": "tsp",
+    "type": "volume"
+  },
+  {
+    "id": "6d52012d",
+    "name": "slice",
+    "abbreviation": "sli",
+    "type": "volume"
+  },
+  {
+    "id": "c5b49837",
+    "name": "tbsp",
+    "abbreviation": "tbsp",
+    "type": "volume"
+  },
+  {
+    "id": "2db95e8e",
+    "name": "l",
+    "abbreviation": "l",
+    "type": "volume"
+  },
+  {
+    "id": "2c61ebff",
+    "name": "can",
+    "abbreviation": "can",
+    "type": "count"
+  },
+  {
+    "id": "b999a7c3",
+    "name": "dash",
+    "abbreviation": "dash",
+    "type": "small_amount"
+  },
+  {
+    "id": "68995fcb",
+    "name": "jar",
+    "abbreviation": "jar",
+    "type": "count"
+  },
+  {
+    "id": "f18ad826",
+    "name": "bunch",
+    "abbreviation": "bun",
+    "type": "count"
+  },
+  {
+    "id": "9c44a901",
+    "name": "teaspoon",
+    "abbreviation": "tea",
+    "type": "volume"
+  },
+  {
+    "id": "63cc396c",
+    "name": "pound",
+    "abbreviation": "pou",
+    "type": "weight"
+  },
+  {
+    "id": "5ae34741",
+    "name": "piece",
+    "abbreviation": "pie",
+    "type": "count"
+  }
+]

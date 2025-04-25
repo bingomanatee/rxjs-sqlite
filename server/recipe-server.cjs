@@ -1327,6 +1327,19 @@ app.get("/api/metadata", async (req, res) => {
   }
 });
 
+// Get metadata by ID
+app.get("/api/metadata/:id", async (req, res) => {
+  try {
+    const metadata = await collections.metadata.findOne(req.params.id).exec();
+    if (!metadata) {
+      return res.status(404).json({ error: "Metadata not found" });
+    }
+    res.json(metadata.toJSON());
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Search recipes with pagination
 app.get("/api/search", async (req, res) => {
   try {
