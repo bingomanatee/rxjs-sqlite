@@ -70,7 +70,44 @@ const db = await createRxDatabase({
 });
 ```
 
-This approach gives you fine-grained control over when validation occurs. You can enable validation at specific points in the document lifecycle where you need it, and disable it at others where nullable fields might cause issues. For example, you might want to validate documents when they're first inserted, but skip validation during queries.
+This approach gives you fine-grained control over when validation occurs. You can enable validation at specific points in the document lifecycle where you need it, and disable it at others where nullable fields might cause issues.
+
+##### Understanding Validation Strategy Settings
+
+Each validation point serves a specific purpose:
+
+- **validateBeforeInsert**: Controls validation when documents are first inserted into the database
+- **validateBeforeSave**: Controls validation when existing documents are updated
+- **validateOnQuery**: Controls validation during query operations
+
+You can enable or disable any combination of these settings based on your specific needs:
+
+```javascript
+// Example 1: Validate on insert and save, but not on queries
+validationStrategy: {
+  validateBeforeInsert: true,
+  validateBeforeSave: true,
+  validateOnQuery: false
+}
+
+// Example 2: Only validate on insert
+validationStrategy: {
+  validateBeforeInsert: true,
+  validateBeforeSave: false,
+  validateOnQuery: false
+}
+
+// Example 3: Only validate on save/update
+validationStrategy: {
+  validateBeforeInsert: false,
+  validateBeforeSave: true,
+  validateOnQuery: false
+}
+```
+
+**Important**: There is no requirement that any specific validation point must be disabled. The common pattern of setting `validateBeforeSave: false` in examples is primarily due to historical issues with nullable fields during save operations in earlier versions of RxDB, not because of a technical limitation in the current version.
+
+Choose the validation strategy that makes sense for your application's needs, balancing data integrity with performance considerations.
 
 #### Option B: Implement a True Custom Validator (More Robust)
 

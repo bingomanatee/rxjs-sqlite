@@ -8,13 +8,16 @@ A reactive adapter for SQLite using RxJS, providing a reactive programming model
 >
 > This project is currently in alpha stage and has not been tested in a full production environment yet. While the core functionality is implemented and working, you may encounter bugs or limitations. Use at your own risk in production systems. We welcome feedback, bug reports, and contributions to help improve stability and feature completeness.
 
-> **⚠️ IMPORTANT: CUSTOM VALIDATOR REQUIRED**
+> **⚠️ IMPORTANT: VALIDATION CONSIDERATIONS FOR NULLABLE FIELDS**
 >
 > When using this adapter with nullable fields (using multi-type arrays like `{ type: ['string', 'null'] }`), you **MUST**:
-> 1. Disable RxDB's dev mode validation OR use a custom validator
+> 1. Either:
+>    - Control RxDB's validation at specific points using `validationStrategy`, OR
+>    - Implement a custom validator that handles nullable fields properly, OR
+>    - Disable dev mode entirely
 > 2. Always use array notation for nullable types: `{ type: ['string', 'null'] }` instead of `{ type: 'string', nullable: true }`
 >
-> The built-in RxDB validators in dev mode cannot properly handle these field types. See [README.validation.md](./README.validation.md) for detailed explanation and solutions.
+> The built-in RxDB validators in dev mode cannot properly handle these field types in all situations. You can selectively enable validation at different points in the document lifecycle (insert, save, query) based on your needs. See [README.validation.md](./README.validation.md) for detailed explanation, examples of different validation strategies, and implementation guidance.
 
 ## Quick Start
 
