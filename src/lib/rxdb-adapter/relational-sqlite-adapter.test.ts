@@ -8,9 +8,19 @@ import path from 'path';
 import fs from 'fs';
 
 describe('Relational SQLite Adapter', () => {
-  const dbName = 'test-relational-db';
+  // Generate a unique database name for each test run
+  const dbName = `test-relational-db-${Date.now()}`;
   const dbPath = path.join(__dirname, '..', '..', '..', `${dbName}.sqlite`);
   let db: any;
+
+  // Clear the database map before running tests
+  beforeAll(() => {
+    // @ts-ignore - Accessing static map
+    if (getRelationalRxStorageSQLite.databaseMap) {
+      // @ts-ignore - Accessing static map
+      getRelationalRxStorageSQLite.databaseMap.clear();
+    }
+  });
 
   // Define a schema with various field types
   const recipeSchema = {
@@ -91,58 +101,33 @@ describe('Relational SQLite Adapter', () => {
   ];
 
   beforeEach(async () => {
+    // Generate a unique database name for each test
+    const uniqueDbName = `${dbName}-${Math.floor(Math.random() * 1000000)}`;
+    const uniqueDbPath = path.join(__dirname, '..', '..', '..', `${uniqueDbName}.sqlite`);
+
     // Remove any existing test database file
-    if (fs.existsSync(dbPath)) {
+    if (fs.existsSync(uniqueDbPath)) {
       try {
-        fs.unlinkSync(dbPath);
+        fs.unlinkSync(uniqueDbPath);
       } catch (error) {
         console.error('Error removing database file:', error);
       }
     }
 
-    try {
-      // Create a new database with the relational SQLite adapter
-      db = await createRxDatabase({
-        name: dbName,
-        storage: getRelationalRxStorageSQLite({
-          filename: dbPath
-        }),
-        ignoreDuplicate: true // Ignore duplicate database error
-      });
+    // Create a new database with the relational SQLite adapter
+    db = await createRxDatabase({
+      name: uniqueDbName,
+      storage: getRelationalRxStorageSQLite({
+        filename: uniqueDbPath
+      })
+    });
 
-      // Add a collection for recipes
-      await db.addCollections({
-        recipes: {
-          schema: recipeSchema
-        }
-      });
-    } catch (error) {
-      console.error('Error creating database:', error);
-      // If the database already exists, try to get it
-      if (error.code === 'DB8') {
-        console.log('Database already exists, trying to reuse it');
-        // Clear the database map to force a new instance
-        getRelationalRxStorageSQLite.databaseMap.clear();
-
-        // Try again with a different name
-        const uniqueDbName = `${dbName}_${Date.now()}`;
-        db = await createRxDatabase({
-          name: uniqueDbName,
-          storage: getRelationalRxStorageSQLite({
-            filename: `${uniqueDbName}.sqlite`
-          })
-        });
-
-        // Add a collection for recipes
-        await db.addCollections({
-          recipes: {
-            schema: recipeSchema
-          }
-        });
-      } else {
-        throw error;
+    // Add a collection for recipes
+    await db.addCollections({
+      recipes: {
+        schema: recipeSchema
       }
-    }
+    });
   });
 
   afterEach(async () => {
@@ -159,14 +144,17 @@ describe('Relational SQLite Adapter', () => {
       } catch (error) {
         console.error('Error cleaning up database:', error);
       }
-    }
 
-    // Remove the test database file
-    if (fs.existsSync(dbPath)) {
-      try {
-        fs.unlinkSync(dbPath);
-      } catch (error) {
-        console.error('Error removing database file:', error);
+      // Get the database path from the database name
+      const dbFilePath = path.join(__dirname, '..', '..', '..', `${db.name}.sqlite`);
+
+      // Remove the test database file
+      if (fs.existsSync(dbFilePath)) {
+        try {
+          fs.unlinkSync(dbFilePath);
+        } catch (error) {
+          console.error('Error removing database file:', error);
+        }
       }
     }
   });
