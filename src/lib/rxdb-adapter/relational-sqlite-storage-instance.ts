@@ -252,7 +252,24 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       console.error('Error running query:', error);
       console.error('Query:', query.query);
       console.error('Params:', query.params);
-      throw error;
+      console.error('Collection:', this.collectionName);
+      console.error('Table name:', this.tableName);
+      console.error('Context:', JSON.stringify(query.context));
+
+      // Create a more detailed error message
+      const enhancedError = new Error(
+        `SQLite error in collection '${this.collectionName}' (table '${this.tableName}'): ${error.message}\n` +
+        `Query: ${query.query}\n` +
+        `Params: ${JSON.stringify(query.params)}\n` +
+        `Context: ${JSON.stringify(query.context)}`
+      );
+
+      // Preserve the original error's stack trace if possible
+      if (error.stack) {
+        enhancedError.stack = error.stack;
+      }
+
+      throw enhancedError;
     }
   }
 
@@ -274,9 +291,9 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       const id = document.id ||
                 (anyDoc.key && anyDoc.context ? `${anyDoc.key}|${anyDoc.context}` : null);
 
-      // If we still don't have an ID, throw an error
+      // If we still don't have an ID, throw an error with detailed information
       if (id === null) {
-        throw new Error('Cannot insert document into _rxdb_internal without an ID, key, or context');
+        throw new Error(`Cannot insert document into _rxdb_internal without an ID, key, or context. Document: ${JSON.stringify(document)}`);
       }
 
       // Create the row with the ID
@@ -300,7 +317,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     // For regular documents
     // Check if the document has an ID
     if (!document.id) {
-      throw new Error(`Cannot insert document without an ID: ${JSON.stringify(document)}`);
+      throw new Error(`Cannot insert document without an ID. Collection: ${this.collectionName}, Document: ${JSON.stringify(document)}, Schema: ${JSON.stringify(this.schema)}`);
     }
 
     const row: Record<string, any> = {
@@ -434,7 +451,16 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
         }
 
         // Convert document to row
-        const row = this.documentToRow(document);
+        let row;
+        try {
+          row = this.documentToRow(document);
+        } catch (err) {
+          console.error(`Error converting document to row: ${err.message}`);
+          console.error(`Document: ${JSON.stringify(document)}`);
+          console.error(`Collection: ${this.collectionName}`);
+          console.error(`Schema: ${JSON.stringify(this.schema)}`);
+          throw err;
+        }
 
         // Build column names and placeholders for SQL
         // Make sure all column names are strings and properly quoted
@@ -474,10 +500,25 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
         // Add to success
         response.success.push(document);
       } catch (error) {
+        // Create a more detailed error message
+        const documentId = writeRow.document.id as string;
+        const enhancedError = new Error(
+          `Error in bulkWrite for collection '${this.collectionName}' (document ID: ${documentId}): ${error.message}\n` +
+          `Document: ${JSON.stringify(writeRow.document)}\n` +
+          `Previous: ${writeRow.previous ? JSON.stringify(writeRow.previous) : 'none'}`
+        );
+
+        // Preserve the original error's stack trace if possible
+        if (error.stack) {
+          enhancedError.stack = error.stack;
+        }
+
+        console.error(enhancedError.message);
+
         // Add to error
         response.error.push({
-          documentId: writeRow.document.id as string,
-          error: error as Error
+          documentId: documentId,
+          error: enhancedError
         });
       }
     }

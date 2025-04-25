@@ -83,13 +83,19 @@ export class RelationalRxStorageSQLite implements RxStorage<SQLiteInternals, SQL
 /**
  * Factory function to create a relational SQLite storage adapter
  */
-export function getRelationalRxStorageSQLite(options?: Database.Options): RelationalRxStorageSQLite {
+export function getRelationalRxStorageSQLite(options?: Database.Options): RxStorage<SQLiteInternals, SQLiteInstanceCreationOptions> {
   // Static property will be added to this function
   const sqliteBasics = getSQLiteBasicsBetterSQLite(options);
 
-  return new RelationalRxStorageSQLite({
+  // Create the base storage
+  const baseStorage = new RelationalRxStorageSQLite({
     sqliteBasics,
     databaseNamePrefix: 'rxdb-'
+  });
+
+  // Wrap the storage with validation
+  return wrappedValidateAjvStorage({
+    storage: baseStorage
   });
 }
 

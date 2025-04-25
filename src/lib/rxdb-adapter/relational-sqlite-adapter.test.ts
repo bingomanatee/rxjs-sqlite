@@ -7,7 +7,7 @@ import { getRelationalRxStorageSQLite } from './relational-sqlite-adapter';
 import path from 'path';
 import fs from 'fs';
 
-describe.skip('Relational SQLite Adapter', () => {
+describe('Relational SQLite Adapter', () => {
   // Generate a unique database name for each test run
   const dbName = `test-relational-db-${Date.now()}`;
   const dbPath = path.join(__dirname, '..', '..', '..', `${dbName}.sqlite`);
@@ -119,7 +119,16 @@ describe.skip('Relational SQLite Adapter', () => {
       name: uniqueDbName,
       storage: getRelationalRxStorageSQLite({
         filename: uniqueDbPath
-      })
+      }),
+      // Enable dev mode to catch validation errors
+      devMode: true,
+      options: {
+        validationStrategy: {
+          validateBeforeInsert: true,
+          validateBeforeSave: true,
+          validateOnQuery: false
+        }
+      }
     });
 
     // Add a collection for recipes
@@ -159,12 +168,12 @@ describe.skip('Relational SQLite Adapter', () => {
     }
   });
 
-  it.skip('should create a database with a collection', () => {
+  it('should create a database with a collection', () => {
     expect(db).toBeDefined();
     expect(db.collections.recipes).toBeDefined();
   });
 
-  it.skip('should insert documents', async () => {
+  it('should insert documents', async () => {
     // Insert a document
     const insertedDoc = await db.collections.recipes.insert(sampleRecipes[0]);
 
