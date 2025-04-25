@@ -358,7 +358,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
             query: `
               UPDATE ${this.tableName}
               SET ${setClause}
-              WHERE ${this.primaryKey} = ?
+              WHERE "${this.primaryKey}" = ?
             `,
             params: [...values, id],
             context: { method: 'bulkWrite', data: { id } }
@@ -439,7 +439,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     let query = `
       SELECT *
       FROM ${this.tableName}
-      WHERE ${this.primaryKey} IN (${placeholders})
+      WHERE "${this.primaryKey}" IN (${placeholders})
     `;
 
     // Add deleted filter if needed
@@ -664,12 +664,12 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
 
     // Add checkpoint filter if provided
     if (checkpoint) {
-      query += ` WHERE (${this.primaryKey} > ? OR (${this.primaryKey} = ? AND _rev > ?))`;
+      query += ` WHERE ("${this.primaryKey}" > ? OR ("${this.primaryKey}" = ? AND "_rev" > ?))`;
       params.push(checkpoint.id, checkpoint.id, checkpoint.id);
     }
 
     // Add order and limit
-    query += ` ORDER BY ${this.primaryKey} ASC LIMIT ?`;
+    query += ` ORDER BY "${this.primaryKey}" ASC LIMIT ?`;
     params.push(limit);
 
     const queryWithParams: SQLiteQueryWithParams = {
@@ -744,9 +744,9 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     // Build the query to find documents to clean up
     const findQuery: SQLiteQueryWithParams = {
       query: `
-        SELECT ${this.primaryKey}
+        SELECT "${this.primaryKey}"
         FROM ${this.tableName}
-        WHERE _deleted = 1
+        WHERE "_deleted" = 1
         LIMIT 100
       `,
       params: [],
@@ -791,7 +791,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     const deleteQuery: SQLiteQueryWithParams = {
       query: `
         DELETE FROM ${this.tableName}
-        WHERE ${this.primaryKey} IN (${placeholders})
+        WHERE "${this.primaryKey}" IN (${placeholders})
       `,
       params: ids,
       context: { method: 'cleanup', data: { ids } }
