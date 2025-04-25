@@ -160,15 +160,16 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
 
     if (isRxDBInternal) {
       // For RxDB internal collection, use a specific schema
+      // Do NOT add NOT NULL constraints to any fields except id
       schemaObj = {
         id: 'TEXT PRIMARY KEY',
         _deleted: 'INTEGER DEFAULT 0',
         _rev: 'TEXT DEFAULT ""',
-        key: 'TEXT',
-        context: 'TEXT',
-        data: 'TEXT',
-        _attachments: 'TEXT',
-        _meta: 'TEXT'
+        key: 'TEXT DEFAULT ""',
+        context: 'TEXT DEFAULT ""',
+        data: 'TEXT DEFAULT ""',
+        _attachments: 'TEXT DEFAULT "{}"',
+        _meta: 'TEXT DEFAULT "{}"'
       };
     } else {
       // For regular collections
@@ -189,11 +190,9 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       const property = this.schema.properties?.[field];
       const sqlType = this.getSqlType(property);
 
-      // Handle nullable fields
-      const isNullable = Array.isArray(property?.type) && property.type.includes('null');
-      const nullConstraint = isNullable ? '' : 'NOT NULL';
-
-      schemaObj[field] = `${sqlType} ${nullConstraint}`;
+      // All fields should be nullable in SQLite to avoid issues
+      // We'll rely on RxDB's validation to enforce required fields
+      schemaObj[field] = `${sqlType}`;
     }
 
     // Use a simple CREATE TABLE statement instead of relying on atmo-db
