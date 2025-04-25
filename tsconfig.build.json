@@ -4,8 +4,16 @@
     "node_modules",
     "dist",
     "src/examples/**/*",
-    "src/lib/rxdb-adapter",
     "src/server/**/*",
+    "src/App.tsx",
+    "src/components/**/*",
+    "src/pages/**/*",
+    "src/hooks/**/*",
+    "src/services/**/*",
+    "src/db/**/*",
     "**/*.test.ts"
+  ],
+  "include": [
+    "src/lib/**/*"
   ]
 }
