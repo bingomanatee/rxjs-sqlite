@@ -154,7 +154,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
 
     // Create a schema object for atmo-db's createTableSchema function
     const schemaObj: Record<string, string> = {
-      [this.primaryKey]: 'TEXT PRIMARY KEY',
+      id: 'TEXT PRIMARY KEY',  // Always use 'id' as the primary key
       _deleted: 'INTEGER DEFAULT 0',
       _rev: 'TEXT DEFAULT ""'  // Allow empty _rev values
     };
@@ -240,8 +240,9 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
    * Convert a document to a row for insertion/update
    */
   private documentToRow(document: RxDocumentData<RxDocType>): Record<string, any> {
+    // Ensure all keys are strings
     const row: Record<string, any> = {
-      [this.primaryKey]: document.id,
+      id: document.id,  // Always use 'id' as the key, not this.primaryKey
       _deleted: document._deleted ? 1 : 0,
       _rev: document._rev || '1-initial'  // Provide a default _rev if null
     };
@@ -271,7 +272,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
    */
   private rowToDocument(row: Record<string, any>): RxDocumentData<RxDocType> {
     const document: any = {
-      id: row[this.primaryKey],
+      id: row.id,  // Always use 'id' as the key, not this.primaryKey
       _deleted: Boolean(row._deleted),
       _rev: row._rev || '1-initial'  // Provide a default _rev if null
     };
@@ -358,7 +359,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
             query: `
               UPDATE ${this.tableName}
               SET ${setClause}
-              WHERE "${this.primaryKey}" = ?
+              WHERE "id" = ?
             `,
             params: [...values, id],
             context: { method: 'bulkWrite', data: { id } }
@@ -439,7 +440,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     let query = `
       SELECT *
       FROM ${this.tableName}
-      WHERE "${this.primaryKey}" IN (${placeholders})
+      WHERE "id" IN (${placeholders})
     `;
 
     // Add deleted filter if needed
@@ -664,12 +665,12 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
 
     // Add checkpoint filter if provided
     if (checkpoint) {
-      query += ` WHERE ("${this.primaryKey}" > ? OR ("${this.primaryKey}" = ? AND "_rev" > ?))`;
+      query += ` WHERE ("id" > ? OR ("id" = ? AND "_rev" > ?))`;
       params.push(checkpoint.id, checkpoint.id, checkpoint.id);
     }
 
     // Add order and limit
-    query += ` ORDER BY "${this.primaryKey}" ASC LIMIT ?`;
+    query += ` ORDER BY "id" ASC LIMIT ?`;
     params.push(limit);
 
     const queryWithParams: SQLiteQueryWithParams = {
