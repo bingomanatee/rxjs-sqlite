@@ -219,8 +219,9 @@ const RecipeDetailPage = () => {
 
   const recipeData = recipe.toJSON();
 
-  // Debug: Log the description
-  console.log('Recipe description:', recipeData.description);
+  // Debug: Log the recipe data
+  console.log('Recipe data:', recipeData);
+  console.log('Recipe category and cuisine:', recipeData.category, recipeData.cuisine);
 
   return (
     <Box>
@@ -257,13 +258,15 @@ const RecipeDetailPage = () => {
           </Box>
 
           {/* Category and Cuisine as text */}
-          {(recipe.getCategoryName || recipe.getCuisineName) && (
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              {recipe.getCategoryName && recipe.getCuisineName
-                ? `${recipe.getCategoryName} • ${recipe.getCuisineName}`
-                : recipe.getCategoryName || recipe.getCuisineName}
-            </Typography>
-          )}
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {recipeData.category && recipeData.cuisine
+              ? `${recipeData.category.displayName} • ${recipeData.cuisine.displayName}`
+              : recipeData.category
+                ? recipeData.category.displayName
+                : recipeData.cuisine
+                  ? recipeData.cuisine.displayName
+                  : ''}
+          </Typography>
 
           {/* Recipe Description */}
           <Typography variant="body1" paragraph sx={{ mb: 3 }}>
