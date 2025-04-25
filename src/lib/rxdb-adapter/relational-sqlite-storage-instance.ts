@@ -156,7 +156,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     const schemaObj: Record<string, string> = {
       [this.primaryKey]: 'TEXT PRIMARY KEY',
       _deleted: 'INTEGER DEFAULT 0',
-      _rev: 'TEXT NOT NULL'
+      _rev: 'TEXT DEFAULT ""'  // Allow empty _rev values
     };
 
     // Add columns for each field in the schema
@@ -243,7 +243,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     const row: Record<string, any> = {
       [this.primaryKey]: document.id,
       _deleted: document._deleted ? 1 : 0,
-      _rev: document._rev
+      _rev: document._rev || '1-initial'  // Provide a default _rev if null
     };
 
     // Add each field from the schema
@@ -273,7 +273,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     const document: any = {
       id: row[this.primaryKey],
       _deleted: Boolean(row._deleted),
-      _rev: row._rev
+      _rev: row._rev || '1-initial'  // Provide a default _rev if null
     };
 
     // Add each field from the schema
