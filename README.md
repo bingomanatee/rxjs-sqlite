@@ -706,6 +706,22 @@ The RxDB SQLite adapter supports most of the RxDB query syntax, leveraging the [
 - **Large Datasets**: The adapter handles large datasets efficiently, but applications with >100k documents may benefit from pagination and careful query design
 - **Reactive Queries**: Subscribing to frequently-changing data with complex queries may impact performance
 
+#### Memory Efficiency with Large Datasets
+
+RxDB maintains an in-memory cache of documents that have been queried. When working with large datasets, this can lead to memory bloat, especially when using pagination (all pages end up cached in memory). For memory-efficient access to large datasets:
+
+1. **Use Direct SQLite Access**: Bypass RxDB's cache by using the SQLite instance directly via `getDBByName()`:
+   ```javascript
+   const sqliteDb = getRxStorageSQLite.getDBByName('mydb');
+   const page = sqliteDb.prepare(`SELECT * FROM mydb_collection LIMIT 50 OFFSET 100`).all();
+   ```
+
+2. **Implement Efficient Pagination**: Create a utility that handles pagination without accumulating documents in memory.
+
+3. **Process Data in Batches**: For large data processing operations, use a batched approach that only keeps a small subset of data in memory at any time.
+
+See the [README.todo.md](./README.todo.md) file for more detailed implementation ideas for memory-efficient data access.
+
 ### Platform Support
 
 - **Node.js**: Fully supported (via better-sqlite3)
