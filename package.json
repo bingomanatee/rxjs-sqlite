@@ -8,14 +8,14 @@
   "types": "dist/lib/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/lib/index.d.ts",
       "import": "./dist/rxjs-sqlite.js",
-      "require": "./dist/rxjs-sqlite.umd.cjs",
-      "types": "./dist/lib/index.d.ts"
+      "require": "./dist/rxjs-sqlite.umd.cjs"
     },
     "./rxdb-adapter": {
+      "types": "./dist/lib/rxdb-adapter/index.d.ts",
       "import": "./dist/rxdb-adapter.js",
-      "require": "./dist/rxdb-adapter.umd.cjs",
-      "types": "./dist/lib/rxdb-adapter/index.d.ts"
+      "require": "./dist/rxdb-adapter.umd.cjs"
     }
   },
   "files": [
