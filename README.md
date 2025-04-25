@@ -19,6 +19,10 @@ A reactive adapter for SQLite using RxJS, providing a reactive programming model
 >
 > The built-in RxDB validators in dev mode cannot properly handle these field types in all situations. You can selectively enable validation at different points in the document lifecycle (insert, save, query) based on your needs. See [README.validation.md](./README.validation.md) for detailed explanation, examples of different validation strategies, and implementation guidance.
 
+> **⚠️ IMPORTANT: AUTOINCREMENT FIELDS NOT SUPPORTED**
+>
+> RxDB is fundamentally incompatible with autoincrement primary keys. RxDB expects documents to have known primary keys at insertion time, which conflicts with database-generated autoincrement IDs. Instead, use client-generated IDs like UUIDs or composite keys based on your business logic. See [README.about.md](./README.about.md) for more details on this limitation.
+
 ## Quick Start
 
 ```typescript
@@ -599,6 +603,7 @@ The RxDB SQLite adapter supports most of the RxDB query syntax, leveraging the [
 - **Complex Regex**: Only basic regex patterns are fully supported in queries
 - **Schema Changes**: Changing collection schemas requires careful migration planning
 - **Nullable Fields and Dev Mode**: When using the relational storage adapter with nullable fields (using multi-type arrays like `{ type: ['string', 'null'] }`), you must disable RxDB's dev mode. The built-in validators in dev mode cannot properly handle these field types.
+- **Autoincrement Fields**: RxDB is fundamentally incompatible with autoincrement primary keys. RxDB's architecture is designed around client-generated IDs that are known at insertion time, which conflicts with database-generated autoincrement IDs. This is due to RxDB's offline-first design where clients need to generate IDs locally without server coordination. Instead, use client-generated IDs like UUIDs or composite keys based on your business logic.
 
 ## Validated Operations and Roadmap
 
