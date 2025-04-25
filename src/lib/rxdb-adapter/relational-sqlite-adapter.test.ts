@@ -320,7 +320,7 @@ describe('Relational SQLite Adapter', () => {
 
   it('should access the underlying SQLite database', () => {
     // Get the SQLite database instance
-    const sqliteDb = getRelationalRxStorageSQLite.getLastDB();
+    const sqliteDb = getRelationalRxStorageSQLite.getDBByName(db.name);
 
     // Verify the database instance is available
     expect(sqliteDb).toBeDefined();
@@ -329,7 +329,7 @@ describe('Relational SQLite Adapter', () => {
     const tables = sqliteDb.prepare("SELECT name FROM sqlite_master WHERE type='table';").all();
 
     // There should be a table for the recipes collection
-    const recipeTableName = `${dbName}_recipes`;
+    const recipeTableName = `${db.name}_recipes`;
     const tableExists = tables.some((table: any) => table.name === recipeTableName);
     expect(tableExists).toBe(true);
 
