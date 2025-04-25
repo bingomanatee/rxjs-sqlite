@@ -156,19 +156,27 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     const isRxDBInternal = this.collectionName === '_rxdb_internal';
 
     // Create a schema object for the table
-    const schemaObj: Record<string, string> = {
-      id: 'TEXT PRIMARY KEY',  // Always use 'id' as the primary key
-      _deleted: 'INTEGER DEFAULT 0',
-      _rev: 'TEXT DEFAULT ""'  // Allow empty _rev values
-    };
+    let schemaObj: Record<string, string>;
 
-    // Add special fields for RxDB internal collection
     if (isRxDBInternal) {
-      schemaObj['key'] = 'TEXT';
-      schemaObj['context'] = 'TEXT';
-      schemaObj['data'] = 'TEXT';
-      schemaObj['_attachments'] = 'TEXT';
-      schemaObj['_meta'] = 'TEXT';
+      // For RxDB internal collection, use a specific schema
+      schemaObj = {
+        id: 'TEXT PRIMARY KEY',
+        _deleted: 'INTEGER DEFAULT 0',
+        _rev: 'TEXT DEFAULT ""',
+        key: 'TEXT',
+        context: 'TEXT',
+        data: 'TEXT',
+        _attachments: 'TEXT',
+        _meta: 'TEXT'
+      };
+    } else {
+      // For regular collections
+      schemaObj = {
+        id: 'TEXT PRIMARY KEY',
+        _deleted: 'INTEGER DEFAULT 0',
+        _rev: 'TEXT DEFAULT ""'
+      };
     }
 
     // Add columns for each field in the schema
@@ -252,25 +260,54 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
    * Convert a document to a row for insertion/update
    */
   private documentToRow(document: RxDocumentData<RxDocType>): Record<string, any> {
-    // Ensure all keys are strings
-    const row: Record<string, any> = {
-      id: document.id,  // Always use 'id' as the key, not this.primaryKey
-      _deleted: document._deleted ? 1 : 0,
-      _rev: document._rev || '1-initial'  // Provide a default _rev if null
-    };
+    // Debug log the document
+    console.log('Converting document to row:', JSON.stringify(document, null, 2));
 
     // Special handling for RxDB internal documents
     const isRxDBInternal = this.collectionName === '_rxdb_internal';
     if (isRxDBInternal) {
-      // Add the special fields for RxDB internal documents
+      // For RxDB internal documents, we need to construct a proper ID
       const anyDoc = document as any;
-      row['key'] = anyDoc.key || '';
-      row['context'] = anyDoc.context || '';
-      row['data'] = typeof anyDoc.data === 'object' ? JSON.stringify(anyDoc.data) : (anyDoc.data || '');
-      row['_attachments'] = typeof anyDoc._attachments === 'object' ? JSON.stringify(anyDoc._attachments) : (anyDoc._attachments || '{}');
-      row['_meta'] = typeof anyDoc._meta === 'object' ? JSON.stringify(anyDoc._meta) : (anyDoc._meta || '{}');
+
+      // Generate an ID if none exists - for RxDB internal, use key and context
+      // This is how RxDB internally generates IDs for the _rxdb_internal collection
+      const id = document.id ||
+                (anyDoc.key && anyDoc.context ? `${anyDoc.key}|${anyDoc.context}` : null);
+
+      // If we still don't have an ID, throw an error
+      if (id === null) {
+        throw new Error('Cannot insert document into _rxdb_internal without an ID, key, or context');
+      }
+
+      // Create the row with the ID
+      const row: Record<string, any> = {
+        id: id,
+        _deleted: document._deleted ? 1 : 0,
+        _rev: document._rev || '1-initial',  // Provide a default _rev if null
+        key: anyDoc.key || '',
+        context: anyDoc.context || '',
+        data: typeof anyDoc.data === 'object' ? JSON.stringify(anyDoc.data) : (anyDoc.data || ''),
+        _attachments: typeof anyDoc._attachments === 'object' ? JSON.stringify(anyDoc._attachments) : (anyDoc._attachments || '{}'),
+        _meta: typeof anyDoc._meta === 'object' ? JSON.stringify(anyDoc._meta) : (anyDoc._meta || '{}')
+      };
+
+      // Debug log the row
+      console.log('Converted row for RxDB internal:', JSON.stringify(row, null, 2));
+
       return row;
     }
+
+    // For regular documents
+    // Check if the document has an ID
+    if (!document.id) {
+      throw new Error(`Cannot insert document without an ID: ${JSON.stringify(document)}`);
+    }
+
+    const row: Record<string, any> = {
+      id: document.id,
+      _deleted: document._deleted ? 1 : 0,
+      _rev: document._rev || '1-initial'  // Provide a default _rev if null
+    };
 
     // Add each field from the schema
     for (const field of this.schemaFields) {
