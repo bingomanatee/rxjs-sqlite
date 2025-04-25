@@ -152,12 +152,24 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     // Replace hyphens with underscores to avoid SQLite syntax errors
     this.tableName = `${this.databaseName.replace(/-/g, '_')}__${this.collectionName.replace(/-/g, '_')}`;
 
-    // Create a schema object for atmo-db's createTableSchema function
+    // Special handling for RxDB internal collections
+    const isRxDBInternal = this.collectionName === '_rxdb_internal';
+
+    // Create a schema object for the table
     const schemaObj: Record<string, string> = {
       id: 'TEXT PRIMARY KEY',  // Always use 'id' as the primary key
       _deleted: 'INTEGER DEFAULT 0',
       _rev: 'TEXT DEFAULT ""'  // Allow empty _rev values
     };
+
+    // Add special fields for RxDB internal collection
+    if (isRxDBInternal) {
+      schemaObj['key'] = 'TEXT';
+      schemaObj['context'] = 'TEXT';
+      schemaObj['data'] = 'TEXT';
+      schemaObj['_attachments'] = 'TEXT';
+      schemaObj['_meta'] = 'TEXT';
+    }
 
     // Add columns for each field in the schema
     for (const field of this.schemaFields) {
@@ -247,6 +259,19 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       _rev: document._rev || '1-initial'  // Provide a default _rev if null
     };
 
+    // Special handling for RxDB internal documents
+    const isRxDBInternal = this.collectionName === '_rxdb_internal';
+    if (isRxDBInternal) {
+      // Add the special fields for RxDB internal documents
+      const anyDoc = document as any;
+      row['key'] = anyDoc.key || '';
+      row['context'] = anyDoc.context || '';
+      row['data'] = typeof anyDoc.data === 'object' ? JSON.stringify(anyDoc.data) : (anyDoc.data || '');
+      row['_attachments'] = typeof anyDoc._attachments === 'object' ? JSON.stringify(anyDoc._attachments) : (anyDoc._attachments || '{}');
+      row['_meta'] = typeof anyDoc._meta === 'object' ? JSON.stringify(anyDoc._meta) : (anyDoc._meta || '{}');
+      return row;
+    }
+
     // Add each field from the schema
     for (const field of this.schemaFields) {
       // Skip fields we've already added
@@ -276,6 +301,35 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       _deleted: Boolean(row._deleted),
       _rev: row._rev || '1-initial'  // Provide a default _rev if null
     };
+
+    // Special handling for RxDB internal documents
+    const isRxDBInternal = this.collectionName === '_rxdb_internal';
+    if (isRxDBInternal) {
+      // Add the special fields for RxDB internal documents
+      document.key = row.key || '';
+      document.context = row.context || '';
+
+      // Parse JSON fields
+      try {
+        document.data = typeof row.data === 'string' ? JSON.parse(row.data) : (row.data || {});
+      } catch (e) {
+        document.data = row.data || {};
+      }
+
+      try {
+        document._attachments = typeof row._attachments === 'string' ? JSON.parse(row._attachments) : (row._attachments || {});
+      } catch (e) {
+        document._attachments = {};
+      }
+
+      try {
+        document._meta = typeof row._meta === 'string' ? JSON.parse(row._meta) : (row._meta || {});
+      } catch (e) {
+        document._meta = {};
+      }
+
+      return document as RxDocumentData<RxDocType>;
+    }
 
     // Add each field from the schema
     for (const field of this.schemaFields) {
