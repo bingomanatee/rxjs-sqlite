@@ -386,9 +386,15 @@ Creates a new RxDB SQLite storage adapter using the relational storage approach.
 
 - `options`: Options for better-sqlite3
 
+## Database Instance Management
+
+The SQLite adapter includes a robust database instance management system that maintains a static map of all database instances, indexed by database name. This system ensures consistent access to database instances throughout your application.
+
+### Database Retrieval Methods
+
 #### `getRxStorageSQLite.getLastDB(): Database` / `getRelationalRxStorageSQLite.getLastDB(): Database`
 
-Returns the last created SQLite database instance. This allows direct access to the underlying better-sqlite3 database for executing raw SQL queries.
+Returns the most recently created SQLite database instance. This allows direct access to the underlying better-sqlite3 database for executing raw SQL queries.
 
 #### `getRxStorageSQLite.getDBByName(databaseName: string): Database` / `getRelationalRxStorageSQLite.getDBByName(databaseName: string): Database`
 
@@ -398,7 +404,89 @@ Returns a SQLite database instance by its name. This is useful when you have mul
 
 Returns an array of all database names that have been created and are available in the map.
 
-⚠️ **NOTE**: The adapter maintains a map of all created database instances, indexed by database name. This allows you to access any database instance at any time, not just the most recently created one.
+### Key Features of the Database Management System
+
+1. **Static Database Map**: Each adapter maintains a static map of database instances indexed by database name, ensuring global access to database instances throughout your application.
+
+2. **Instance Reuse**: When creating a database with a name that already exists, the adapter automatically reuses the existing database instance instead of creating a new one. This prevents database connection duplication and ensures consistency.
+
+3. **Separate Maps for Different Adapters**: The standard and relational adapters maintain separate maps, allowing you to use both adapter types with the same database names without conflicts.
+
+4. **Global Accessibility**: The static nature of the database map means you can access any database instance from anywhere in your code using `getDBByName()`, without needing to pass database references around.
+
+### Example: Accessing Database Instances
+
+```javascript
+// Create a database
+const db = await createRxDatabase({
+  name: 'myapp',
+  storage: getRxStorageSQLite({
+    filename: 'path/to/database.sqlite'
+  })
+});
+
+// Later, in another part of your application
+const sqliteDb = getRxStorageSQLite.getDBByName('myapp');
+
+// Execute raw SQL queries
+const results = sqliteDb.prepare(`
+  SELECT * FROM myapp_users WHERE json_extract(data, '$.active') = 1
+`).all();
+```
+
+### Example: Working with Multiple Databases
+
+```javascript
+// Create multiple databases
+const usersDb = await createRxDatabase({
+  name: 'users',
+  storage: getRxStorageSQLite()
+});
+
+const productsDb = await createRxDatabase({
+  name: 'products',
+  storage: getRxStorageSQLite()
+});
+
+// List all available databases
+const availableDatabases = getRxStorageSQLite.getAvailableDatabases();
+console.log('Available databases:', availableDatabases); // ['users', 'products']
+
+// Access specific database instances
+const usersDbInstance = getRxStorageSQLite.getDBByName('users');
+const productsDbInstance = getRxStorageSQLite.getDBByName('products');
+
+// Execute cross-database queries
+const activeUsersWithPurchases = usersDbInstance.prepare(`
+  SELECT u.id, u.name, COUNT(p.id) as purchase_count
+  FROM users_users u
+  JOIN products_purchases p ON json_extract(p.data, '$.userId') = u.id
+  WHERE json_extract(u.data, '$.active') = 1
+  GROUP BY u.id
+`).all();
+```
+
+### Example: Database Instance Reuse
+
+```javascript
+// Create a database
+const db1 = await createRxDatabase({
+  name: 'shared',
+  storage: getRxStorageSQLite()
+});
+
+// Create another database with the same name
+const db2 = await createRxDatabase({
+  name: 'shared',
+  storage: getRxStorageSQLite()
+});
+
+// Both db1 and db2 use the same underlying SQLite instance
+const sqliteDb1 = getRxStorageSQLite.getDBByName('shared');
+const sqliteDb2 = getRxStorageSQLite.getLastDB();
+
+console.log(sqliteDb1 === sqliteDb2); // true - same instance
+```
 
 **IMPORTANT**: SQLite has limitations with concurrent write operations. While you can create a separate connection to read from the same database file, concurrent write operations from multiple connections can lead to database locks or corruption. For write operations, you should either:
 
@@ -409,11 +497,14 @@ Returns an array of all database names that have been created and are available 
 Reading from multiple connections is generally safe, but writing should be done through a single connection to avoid issues.
 
 ```javascript
-// Recommended approach for accessing the SQLite instance
+// Example of using both adapter types with the database map
 const { createRxDatabase } = require('rxdb');
-const { getRxStorageSQLite } = require('rxjs-sqlite/rxdb-adapter');
+const {
+  getRxStorageSQLite,
+  getRelationalRxStorageSQLite
+} = require('rxjs-sqlite/rxdb-adapter');
 
-// Create multiple RxDB databases
+// Create a database with the standard adapter
 const recipeDb = await createRxDatabase({
   name: 'recipes',
   storage: getRxStorageSQLite({
@@ -421,22 +512,27 @@ const recipeDb = await createRxDatabase({
   })
 });
 
+// Create a database with the relational adapter
 const userDb = await createRxDatabase({
   name: 'users',
-  storage: getRxStorageSQLite({
+  storage: getRelationalRxStorageSQLite({
     filename: 'path/to/users.sqlite'
-  })
+  }),
+  devMode: false // Disable dev mode for relational adapter
 });
 
-// Access SQLite instances by database name
+// Access SQLite instances by database name from the appropriate adapter
 const recipesSqliteDb = getRxStorageSQLite.getDBByName('recipes');
-const usersSqliteDb = getRxStorageSQLite.getDBByName('users');
+const usersSqliteDb = getRelationalRxStorageSQLite.getDBByName('users');
 
-// List all available databases
-const availableDatabases = getRxStorageSQLite.getAvailableDatabases();
-console.log('Available databases:', availableDatabases); // ['recipes', 'users']
+// List all available databases for each adapter type
+const standardDatabases = getRxStorageSQLite.getAvailableDatabases();
+const relationalDatabases = getRelationalRxStorageSQLite.getAvailableDatabases();
 
-// Use the recipe database for raw queries
+console.log('Standard databases:', standardDatabases); // ['recipes']
+console.log('Relational databases:', relationalDatabases); // ['users']
+
+// Use the recipe database (standard adapter) for raw queries
 const results = recipesSqliteDb.prepare(`
   SELECT r.id, r.name, COUNT(ri.id) as ingredient_count
   FROM recipes_recipes r
@@ -448,12 +544,26 @@ const results = recipesSqliteDb.prepare(`
 
 console.log('Top 5 recipes by ingredient count:', results);
 
-// Use the user database for user-related queries
+// Use the user database (relational adapter) for user-related queries
+// Note: With the relational adapter, fields are stored as individual columns
 const activeUsers = usersSqliteDb.prepare(`
-  SELECT * FROM users_users WHERE json_extract(data, '$.active') = 1
+  SELECT * FROM users_users WHERE active = 1
 `).all();
 
 console.log('Active users:', activeUsers);
+
+// Create another database with the same name as an existing one
+// This will reuse the existing database instance
+const recipeDb2 = await createRxDatabase({
+  name: 'recipes',
+  storage: getRxStorageSQLite({
+    filename: 'path/to/recipes.sqlite'
+  })
+});
+
+// Verify it's the same database instance
+const recipesSqliteDb2 = getRxStorageSQLite.getDBByName('recipes');
+console.log('Same instance:', recipesSqliteDb === recipesSqliteDb2); // true
 ```
 
 ### Using the Relational SQLite Adapter
