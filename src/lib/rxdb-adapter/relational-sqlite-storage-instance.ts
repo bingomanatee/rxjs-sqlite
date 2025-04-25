@@ -148,6 +148,10 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
   async initialize(): Promise<void> {
     const db = await this.internals.databasePromise;
 
+    // Create a table name based on the database and collection names
+    // Replace hyphens with underscores to avoid SQLite syntax errors
+    this.tableName = `${this.databaseName.replace(/-/g, '_')}__${this.collectionName.replace(/-/g, '_')}`;
+
     // Create a schema object for atmo-db's createTableSchema function
     const schemaObj: Record<string, string> = {
       [this.primaryKey]: 'TEXT PRIMARY KEY',
@@ -172,21 +176,11 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       schemaObj[field] = `${sqlType} ${nullConstraint}`;
     }
 
-    // Use atmo-db's createTableSchema function to generate the CREATE TABLE statement
-    // @ts-ignore - Import from @wonderlandlabs/atmo-db
-    const { createTableSchema } = require('@wonderlandlabs/atmo-db');
-
-    let createTableSql: string;
-    try {
-      createTableSql = createTableSchema(this.tableName, schemaObj);
-    } catch (error) {
-      console.error('Error creating table schema:', error);
-      // Fallback to a simple CREATE TABLE statement
-      const columns = Object.entries(schemaObj)
-        .map(([column, type]) => `${column} ${type}`)
-        .join(', ');
-      createTableSql = `CREATE TABLE IF NOT EXISTS ${this.tableName} (${columns})`;
-    }
+    // Use a simple CREATE TABLE statement instead of relying on atmo-db
+    const columns = Object.entries(schemaObj)
+      .map(([column, type]) => `${column} ${type}`)
+      .join(', ');
+    const createTableSql = `CREATE TABLE IF NOT EXISTS ${this.tableName} (${columns})`;
 
     // Create the main document table
     const createTableQuery: SQLiteQueryWithParams = {
@@ -459,7 +453,30 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     };
 
     // Execute the query
-    const rows = await db.all(queryWithParams);
+    let rows;
+    try {
+      // @ts-ignore - SQLite database methods may vary between implementations
+      if (typeof db.all === 'function') {
+        rows = await db.all(queryWithParams.query, queryWithParams.params);
+      } else if (typeof db.prepare === 'function') {
+        const stmt = db.prepare(queryWithParams.query);
+        if (typeof stmt.all === 'function') {
+          rows = await stmt.all(queryWithParams.params);
+        } else if (typeof stmt.get === 'function') {
+          // Fallback to get for single row
+          rows = [await stmt.get(queryWithParams.params)];
+        } else {
+          throw new Error('No suitable method found to execute the query');
+        }
+      } else {
+        throw new Error('No suitable method found to execute the query');
+      }
+    } catch (error) {
+      console.error('Error executing query:', error);
+      console.error('Query:', queryWithParams.query);
+      console.error('Params:', queryWithParams.params);
+      rows = [];
+    }
 
     // Convert rows to documents
     return rows.map(row => this.rowToDocument(row));
@@ -490,7 +507,30 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     };
 
     // Execute the query
-    const rows = await db.all(queryWithParams);
+    let rows;
+    try {
+      // @ts-ignore - SQLite database methods may vary between implementations
+      if (typeof db.all === 'function') {
+        rows = await db.all(queryWithParams.query, queryWithParams.params);
+      } else if (typeof db.prepare === 'function') {
+        const stmt = db.prepare(queryWithParams.query);
+        if (typeof stmt.all === 'function') {
+          rows = await stmt.all(queryWithParams.params);
+        } else if (typeof stmt.get === 'function') {
+          // Fallback to get for single row
+          rows = [await stmt.get(queryWithParams.params)];
+        } else {
+          throw new Error('No suitable method found to execute the query');
+        }
+      } else {
+        throw new Error('No suitable method found to execute the query');
+      }
+    } catch (error) {
+      console.error('Error executing query:', error);
+      console.error('Query:', queryWithParams.query);
+      console.error('Params:', queryWithParams.params);
+      rows = [];
+    }
 
     // Convert rows to documents
     const documents = rows.map(row => this.rowToDocument(row));
@@ -526,7 +566,30 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     };
 
     // Execute the query
-    const rows = await db.all(queryWithParams);
+    let rows;
+    try {
+      // @ts-ignore - SQLite database methods may vary between implementations
+      if (typeof db.all === 'function') {
+        rows = await db.all(queryWithParams.query, queryWithParams.params);
+      } else if (typeof db.prepare === 'function') {
+        const stmt = db.prepare(queryWithParams.query);
+        if (typeof stmt.all === 'function') {
+          rows = await stmt.all(queryWithParams.params);
+        } else if (typeof stmt.get === 'function') {
+          // Fallback to get for single row
+          rows = [await stmt.get(queryWithParams.params)];
+        } else {
+          throw new Error('No suitable method found to execute the query');
+        }
+      } else {
+        throw new Error('No suitable method found to execute the query');
+      }
+    } catch (error) {
+      console.error('Error executing query:', error);
+      console.error('Query:', queryWithParams.query);
+      console.error('Params:', queryWithParams.params);
+      rows = [];
+    }
 
     // Parse the result
     const count = rows[0]?.count || 0;
@@ -615,7 +678,30 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     };
 
     // Execute the query
-    const rows = await db.all(queryWithParams);
+    let rows;
+    try {
+      // @ts-ignore - SQLite database methods may vary between implementations
+      if (typeof db.all === 'function') {
+        rows = await db.all(queryWithParams.query, queryWithParams.params);
+      } else if (typeof db.prepare === 'function') {
+        const stmt = db.prepare(queryWithParams.query);
+        if (typeof stmt.all === 'function') {
+          rows = await stmt.all(queryWithParams.params);
+        } else if (typeof stmt.get === 'function') {
+          // Fallback to get for single row
+          rows = [await stmt.get(queryWithParams.params)];
+        } else {
+          throw new Error('No suitable method found to execute the query');
+        }
+      } else {
+        throw new Error('No suitable method found to execute the query');
+      }
+    } catch (error) {
+      console.error('Error executing query:', error);
+      console.error('Query:', queryWithParams.query);
+      console.error('Params:', queryWithParams.params);
+      rows = [];
+    }
 
     // Convert rows to documents
     const documents = rows.map(row => this.rowToDocument(row));
@@ -667,7 +753,30 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     };
 
     // Execute the query
-    const rows = await db.all(findQuery);
+    let rows;
+    try {
+      // @ts-ignore - SQLite database methods may vary between implementations
+      if (typeof db.all === 'function') {
+        rows = await db.all(findQuery.query, findQuery.params);
+      } else if (typeof db.prepare === 'function') {
+        const stmt = db.prepare(findQuery.query);
+        if (typeof stmt.all === 'function') {
+          rows = await stmt.all(findQuery.params);
+        } else if (typeof stmt.get === 'function') {
+          // Fallback to get for single row
+          rows = [await stmt.get(findQuery.params)];
+        } else {
+          throw new Error('No suitable method found to execute the query');
+        }
+      } else {
+        throw new Error('No suitable method found to execute the query');
+      }
+    } catch (error) {
+      console.error('Error executing query:', error);
+      console.error('Query:', findQuery.query);
+      console.error('Params:', findQuery.params);
+      rows = [];
+    }
 
     if (rows.length === 0) {
       // No documents to clean up

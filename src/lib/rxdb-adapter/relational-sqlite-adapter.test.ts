@@ -93,34 +93,81 @@ describe('Relational SQLite Adapter', () => {
   beforeEach(async () => {
     // Remove any existing test database file
     if (fs.existsSync(dbPath)) {
-      fs.unlinkSync(dbPath);
+      try {
+        fs.unlinkSync(dbPath);
+      } catch (error) {
+        console.error('Error removing database file:', error);
+      }
     }
 
-    // Create a new database with the relational SQLite adapter
-    db = await createRxDatabase({
-      name: dbName,
-      storage: getRelationalRxStorageSQLite({
-        filename: dbPath
-      })
-    });
+    try {
+      // Create a new database with the relational SQLite adapter
+      db = await createRxDatabase({
+        name: dbName,
+        storage: getRelationalRxStorageSQLite({
+          filename: dbPath
+        }),
+        ignoreDuplicate: true // Ignore duplicate database error
+      });
 
-    // Add a collection for recipes
-    await db.addCollections({
-      recipes: {
-        schema: recipeSchema
+      // Add a collection for recipes
+      await db.addCollections({
+        recipes: {
+          schema: recipeSchema
+        }
+      });
+    } catch (error) {
+      console.error('Error creating database:', error);
+      // If the database already exists, try to get it
+      if (error.code === 'DB8') {
+        console.log('Database already exists, trying to reuse it');
+        // Clear the database map to force a new instance
+        getRelationalRxStorageSQLite.databaseMap.clear();
+
+        // Try again with a different name
+        const uniqueDbName = `${dbName}_${Date.now()}`;
+        db = await createRxDatabase({
+          name: uniqueDbName,
+          storage: getRelationalRxStorageSQLite({
+            filename: `${uniqueDbName}.sqlite`
+          })
+        });
+
+        // Add a collection for recipes
+        await db.addCollections({
+          recipes: {
+            schema: recipeSchema
+          }
+        });
+      } else {
+        throw error;
       }
-    });
+    }
   });
 
   afterEach(async () => {
     // Clean up the database
     if (db) {
-      await db.destroy();
+      try {
+        // Try to destroy the database if the method exists
+        if (typeof db.destroy === 'function') {
+          await db.destroy();
+        } else if (typeof db.close === 'function') {
+          // Fallback to close if destroy is not available
+          await db.close();
+        }
+      } catch (error) {
+        console.error('Error cleaning up database:', error);
+      }
     }
 
     // Remove the test database file
     if (fs.existsSync(dbPath)) {
-      fs.unlinkSync(dbPath);
+      try {
+        fs.unlinkSync(dbPath);
+      } catch (error) {
+        console.error('Error removing database file:', error);
+      }
     }
   });
 
