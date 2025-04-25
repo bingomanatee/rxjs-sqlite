@@ -29,7 +29,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -p tsconfig.build.json && vite build",
+    "build": "./build.sh",
     "build:server": "node build-server.cjs",
     "preview": "vite preview",
     "test": "vitest run",
