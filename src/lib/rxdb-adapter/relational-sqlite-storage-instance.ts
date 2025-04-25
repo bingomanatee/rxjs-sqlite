@@ -178,7 +178,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
 
     // Use a simple CREATE TABLE statement instead of relying on atmo-db
     const columns = Object.entries(schemaObj)
-      .map(([column, type]) => `${column} ${type}`)
+      .map(([column, type]) => `"${String(column)}" ${type}`)
       .join(', ');
     const createTableSql = `CREATE TABLE IF NOT EXISTS ${this.tableName} (${columns})`;
 
@@ -345,10 +345,10 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
         const row = this.documentToRow(document);
 
         // Build column names and placeholders for SQL
-        // Make sure all column names are strings
-        const columns = Object.keys(row).map(col => String(col));
+        // Make sure all column names are strings and properly quoted
+        const columns = Object.keys(row).map(col => `"${String(col)}"`);
         const placeholders = columns.map(() => '?').join(', ');
-        const values = columns.map(col => row[col]);
+        const values = Object.keys(row).map(col => row[col]);
 
         if (exists) {
           // Update existing document
