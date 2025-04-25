@@ -25,9 +25,9 @@ Integrating SQLite was like trying to fit a square peg into a round hole:
 
 SQLite (via better-sqlite3) only works in Node.js environments, not browsers. This forced us to design a server-client architecture where the SQLite adapter runs on the server while providing a reactive experience to browser clients.
 
-RxDB follows a document-oriented model, while SQLite is relational. We implemented two approaches:
-- A blob-style storage that stores documents as JSON in a single column
-- A relational storage that maps document fields to individual columns
+RxDB follows a document-oriented model, while SQLite is relational. We considered two possible approaches:
+- A blob-style storage that would store documents as JSON in a single column (simpler but less efficient)
+- A relational storage that maps document fields to individual columns (what we ultimately implemented)
 
 Translating RxDB's Mango queries to SQL was complex. We leveraged code from the atmo-db package to handle common operators and query patterns.
 
@@ -38,6 +38,7 @@ One of the most significant challenges was handling validation, particularly wit
 RxDB's built-in validators in dev mode couldn't properly handle fields with multi-type arrays like `{ type: ['string', 'null'] }`. This was a MASSIVE PAIN.
 
 We explored different validation strategies:
+- **The Easy Way Out**: Don't use nullable fields at all! If you avoid nullable fields in your schema, you can use any validator you like without issues. This is the simplest approach if your data model allows it.
 - Disabling dev mode entirely (simple but loses benefits)
 - Implementing custom validators (more work but more control)
 - Using validation strategies to control when validation occurs (fine-grained control)
@@ -56,17 +57,17 @@ Instead, we documented alternative approaches for ID generation that work well w
 
 ## Technical Decisions and Trade-offs
 
-### Storage Approach - Two Paths
+### Storage Approach - The Relational Path
 
-We implemented two storage approaches:
-
-**Blob-Style Storage**:
-- Simple implementation, maintains compatibility with other RxDB adapters
-- Less efficient for querying specific fields
+After evaluating our options, we chose to implement a relational storage approach:
 
 **Relational Storage**:
-- Better performance for field-specific queries, more efficient storage
+- Better performance for field-specific queries
+- More efficient storage and indexing
+- Allows for proper SQL constraints and types
 - More complex implementation, requires mapping between document and relational models
+
+We considered but ultimately rejected a blob-style storage approach (storing documents as JSON in a single column) because while it would be simpler to implement, it would sacrifice many of the benefits of using SQLite in the first place.
 
 ### Validation Strategy - Choose Your Poison
 
