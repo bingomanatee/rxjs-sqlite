@@ -25,7 +25,7 @@ import type {
 } from 'rxdb/dist/types/plugins/storage-sqlite/sqlite-types';
 
 import { Observable, Subject } from 'rxjs';
-import { SQLiteDatabaseClass } from 'rxdb/dist/types/plugins/storage-sqlite/sqlite-types';
+import type { SQLiteDatabaseClass } from 'rxdb/dist/types/plugins/storage-sqlite/sqlite-types';
 import { getSQLiteQueryBuilderFromMangoQuery } from './enhanced-query-builder';
 
 /**

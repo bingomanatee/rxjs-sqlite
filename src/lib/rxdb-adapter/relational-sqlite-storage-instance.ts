@@ -25,9 +25,9 @@ import type {
 } from 'rxdb/dist/types/plugins/storage-sqlite/sqlite-types';
 
 import { Observable, Subject } from 'rxjs';
-import { SQLiteDatabaseClass } from 'rxdb/dist/types/plugins/storage-sqlite/sqlite-types';
+import type { SQLiteDatabaseClass } from 'rxdb/dist/types/plugins/storage-sqlite/sqlite-types';
 import { getSQLiteQueryBuilderFromMangoQuery } from './enhanced-query-builder';
-import { createTableSchema } from '@wonderlandlabs/atmo-db';
+import type { createTableSchema } from '@wonderlandlabs/atmo-db';
 
 /**
  * RxDB Relational SQLite Storage Instance
@@ -96,7 +96,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
   /**
    * Get the SQL type for a schema property
    */
-  private getSqlType(property: any): string {
+  private getSqlType(property: any, isKey: boolean = false): string {
     if (!property || !property.type) {
       return 'TEXT';
     }
@@ -104,12 +104,17 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     // Handle array of types (e.g., ["string", "null"])
     const type = Array.isArray(property.type) ? property.type[0] : property.type;
 
+    // Check for autoincrement primary key
+    if (isKey && type === 'integer' && property.autoIncrement) {
+      return 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    }
+
     switch (type) {
       case 'string':
         return 'TEXT';
       case 'number':
       case 'integer':
-        return 'REAL';
+        return 'INTEGER'; // Use INTEGER instead of REAL for integer types
       case 'boolean':
         return 'INTEGER';
       case 'object':
@@ -118,6 +123,23 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       default:
         return 'TEXT';
     }
+  }
+
+  /**
+   * Check if a field is an autoincrement primary key
+   */
+  private isAutoIncrementField(field: string): boolean {
+    if (field !== this.primaryKey) {
+      return false;
+    }
+
+    const property = this.schema.properties?.[field];
+    if (!property) {
+      return false;
+    }
+
+    const type = Array.isArray(property.type) ? property.type[0] : property.type;
+    return type === 'integer' && property.autoIncrement === true;
   }
 
   /**
