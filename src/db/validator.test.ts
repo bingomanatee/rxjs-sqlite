@@ -12,7 +12,7 @@ describe('RxDB Custom Validator', () => {
 
   // Test that the validator function returns an empty array (no errors)
   it('should return an empty array for any input', () => {
-    const schema = {wht
+    const schema = {
       version: 0,
       primaryKey: 'id',
       type: 'object',

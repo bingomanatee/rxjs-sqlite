@@ -176,7 +176,9 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       schemaObj = {
         id: 'TEXT PRIMARY KEY',
         _deleted: 'INTEGER DEFAULT 0',
-        _rev: 'TEXT DEFAULT ""'
+        _rev: 'TEXT DEFAULT ""',
+        _attachments: 'TEXT DEFAULT "{}"',
+        _meta: 'TEXT DEFAULT "{}"'
       };
     }
 
@@ -244,17 +246,35 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
           return String(param);
         });
       }
-      console.log('Executing SQL query:', debugQuery);
 
+      // Convert boolean values to integers for SQLite
+      const convertedParams = query.params.map(param =>
+        typeof param === 'boolean' ? (param ? 1 : 0) : param
+      );
+
+      // Handle better-sqlite3 (synchronous API) vs node-sqlite3 (async API)
       // @ts-ignore - SQLite database methods may vary between implementations
       if (typeof db.run === 'function') {
-        await db.run(query.query, query.params);
+        // Check if the method returns a Promise
+        const result = db.run(query.query, convertedParams);
+        if (result instanceof Promise) {
+          await result;
+        }
       } else if (typeof db.exec === 'function') {
-        await db.exec(query.query, query.params);
+        // Check if the method returns a Promise
+        const result = db.exec(query.query, convertedParams);
+        if (result instanceof Promise) {
+          await result;
+        }
       } else if (typeof db.prepare === 'function') {
         const stmt = db.prepare(query.query);
         if (typeof stmt.run === 'function') {
-          await stmt.run(query.params);
+          // Check if the method returns a Promise
+          // For better-sqlite3, we need to use the spread operator
+          const result = stmt.run(...convertedParams);
+          if (result instanceof Promise) {
+            await result;
+          }
         } else {
           throw new Error('No suitable method found to execute the query');
         }
@@ -291,7 +311,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
    */
   private documentToRow(document: RxDocumentData<RxDocType>): Record<string, any> {
     // Debug log the document
-    console.log('Converting document to row:', JSON.stringify(document, null, 2));
+    console.log(`Converting document to row for collection ${this.collectionName}:`, JSON.stringify(document));
 
     // Special handling for RxDB internal documents
     const isRxDBInternal = this.collectionName === '_rxdb_internal';
@@ -301,12 +321,18 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
 
       // Generate an ID if none exists - for RxDB internal, use key and context
       // This is how RxDB internally generates IDs for the _rxdb_internal collection
-      const id = document.id ||
-                (anyDoc.key && anyDoc.context ? `${anyDoc.key}|${anyDoc.context}` : null);
+      let id = document.id;
 
-      // If we still don't have an ID, throw an error with detailed information
-      if (id === null) {
-        throw new Error(`Cannot insert document into _rxdb_internal without an ID, key, or context. Document: ${JSON.stringify(document)}`);
+      if (!id && anyDoc.key && anyDoc.context) {
+        id = `${anyDoc.key}|${anyDoc.context}`;
+      }
+
+      // If we still don't have an ID, generate a random one
+      // This is a fallback for cases where RxDB is inserting a document without an ID, key, or context
+      if (!id) {
+        id = `generated-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+        console.warn(`Generated random ID for _rxdb_internal document: ${id}`);
+        console.warn(`Document: ${JSON.stringify(document)}`);
       }
 
       // Create the row with the ID
@@ -316,14 +342,12 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
         _rev: document._rev || '1-initial',  // Provide a default _rev if null
         key: anyDoc.key || '',
         context: anyDoc.context || '',
-        data: typeof anyDoc.data === 'object' ? JSON.stringify(anyDoc.data) : (anyDoc.data || ''),
+        data: typeof anyDoc.data === 'object' ? JSON.stringify(anyDoc.data) : (anyDoc.data || ''),  // Only for _rxdb_internal
         _attachments: typeof anyDoc._attachments === 'object' ? JSON.stringify(anyDoc._attachments) : (anyDoc._attachments || '{}'),
         _meta: typeof anyDoc._meta === 'object' ? JSON.stringify(anyDoc._meta) : (anyDoc._meta || '{}')
       };
 
-      // Debug log the row
-      console.log('Converted row for RxDB internal:', JSON.stringify(row, null, 2));
-
+      console.log(`Converted _rxdb_internal row:`, JSON.stringify(row));
       return row;
     }
 
@@ -335,7 +359,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
 
     const row: Record<string, any> = {
       id: document.id,
-      _deleted: document._deleted ? 1 : 0,
+      _deleted: document._deleted ? 1 : 0,  // Convert boolean to integer for SQLite
       _rev: document._rev || '1-initial'  // Provide a default _rev if null
     };
 
@@ -351,11 +375,26 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       // Handle complex types (objects, arrays) by serializing to JSON
       if (typeof value === 'object' && value !== null) {
         row[field] = JSON.stringify(value);
+      } else if (typeof value === 'boolean') {
+        // Convert boolean values to integers for SQLite
+        row[field] = value ? 1 : 0;
       } else {
         row[field] = value;
       }
     }
 
+    // Add _attachments and _meta fields
+    if (document._attachments) {
+      row._attachments = typeof document._attachments === 'object' ?
+        JSON.stringify(document._attachments) : document._attachments;
+    }
+
+    if (document._meta) {
+      row._meta = typeof document._meta === 'object' ?
+        JSON.stringify(document._meta) : document._meta;
+    }
+
+    console.log(`Converted row for document ${document.id}:`, JSON.stringify(row));
     return row;
   }
 
@@ -363,9 +402,11 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
    * Convert a row from the database to a document
    */
   private rowToDocument(row: Record<string, any>): RxDocumentData<RxDocType> {
+    console.log(`Converting row to document for collection ${this.collectionName}:`, JSON.stringify(row));
+
     const document: any = {
       id: row.id,  // Always use 'id' as the key, not this.primaryKey
-      _deleted: Boolean(row._deleted),
+      _deleted: row._deleted === 1 || Boolean(row._deleted),  // Convert SQLite integer to boolean
       _rev: row._rev || '1-initial'  // Provide a default _rev if null
     };
 
@@ -376,7 +417,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       document.key = row.key || '';
       document.context = row.context || '';
 
-      // Parse JSON fields
+      // Parse JSON fields - data field is only used for _rxdb_internal
       try {
         document.data = typeof row.data === 'string' ? JSON.parse(row.data) : (row.data || {});
       } catch (e) {
@@ -395,6 +436,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
         document._meta = {};
       }
 
+      console.log(`Converted _rxdb_internal document:`, JSON.stringify(document));
       return document as RxDocumentData<RxDocType>;
     }
 
@@ -419,11 +461,28 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
         } catch (e) {
           document[field] = row[field];
         }
+      } else if (type === 'boolean') {
+        // Convert SQLite integer to boolean
+        document[field] = row[field] === 1 || Boolean(row[field]);
       } else {
         document[field] = row[field];
       }
     }
 
+    // Parse _attachments and _meta fields
+    try {
+      document._attachments = typeof row._attachments === 'string' ? JSON.parse(row._attachments) : (row._attachments || {});
+    } catch (e) {
+      document._attachments = {};
+    }
+
+    try {
+      document._meta = typeof row._meta === 'string' ? JSON.parse(row._meta) : (row._meta || {});
+    } catch (e) {
+      document._meta = {};
+    }
+
+    console.log(`Converted document for row with ID ${row.id}:`, JSON.stringify(document));
     return document as RxDocumentData<RxDocType>;
   }
 
@@ -444,7 +503,14 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       error: []
     };
 
-    // Process each document write
+    // Prepare all operations first to validate them before executing any
+    const operations: Array<{
+      document: RxDocumentData<RxDocType>;
+      exists: boolean;
+      query: SQLiteQueryWithParams;
+    }> = [];
+
+    // First phase: Validate all documents and prepare operations
     for (const writeRow of documentWrites) {
       try {
         const document = writeRow.document;
@@ -456,11 +522,14 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
 
         if (exists && writeRow.previous && existingDoc[0]._rev !== writeRow.previous._rev) {
           // Conflict - document has been modified
+          const conflictError = new Error(`Conflict: Document with id ${id} has been modified`);
           response.error.push({
             documentId: id,
-            error: new Error(`Conflict: Document with id ${id} has been modified`)
+            error: conflictError
           });
-          continue;
+
+          // If any document has a conflict, fail the entire operation
+          return response;
         }
 
         // Convert document to row
@@ -472,51 +541,66 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
           console.error(`Document: ${JSON.stringify(document)}`);
           console.error(`Collection: ${this.collectionName}`);
           console.error(`Schema: ${JSON.stringify(this.schema)}`);
-          throw err;
+
+          // Create a more detailed error message
+          const enhancedError = new Error(
+            `Error converting document to row for collection '${this.collectionName}' (document ID: ${id}): ${err.message}\n` +
+            `Document: ${JSON.stringify(document)}`
+          );
+
+          // Preserve the original error's stack trace if possible
+          if (err.stack) {
+            enhancedError.stack = err.stack;
+          }
+
+          response.error.push({
+            documentId: id,
+            error: enhancedError
+          });
+
+          // If any document fails validation, fail the entire operation
+          return response;
         }
 
         // Build column names and placeholders for SQL
         // Make sure all column names are strings and properly quoted
         const columns = Object.keys(row).map(col => `"${String(col)}"`);
-        const placeholders = columns.map(() => '?').join(', ');
-        const values = Object.keys(row).map(col => row[col]);
+        const placeholders = Object.keys(row).map(() => '?').join(', ');
+        const values = Object.values(row);
+
+        console.log(`bulkWrite ${exists ? 'update' : 'insert'} for document ${id}:`, JSON.stringify(row));
+
+        let query: SQLiteQueryWithParams;
 
         if (exists) {
           // Update existing document
           const setClause = columns.map(col => `${col} = ?`).join(', ');
 
-          const updateQuery: SQLiteQueryWithParams = {
-            query: `
-              UPDATE ${this.tableName}
-              SET ${setClause}
-              WHERE "id" = ?
-            `,
+          query = {
+            query: `UPDATE ${this.tableName} SET ${setClause} WHERE "id" = ?`,
             params: [...values, id],
             context: { method: 'bulkWrite', data: { id } }
           };
-
-          await this.runQuery(db, updateQuery);
         } else {
           // Insert new document
-          const insertQuery: SQLiteQueryWithParams = {
-            query: `
-              INSERT INTO ${this.tableName} (${columns.join(', ')})
-              VALUES (${placeholders})
-            `,
+          query = {
+            query: `INSERT INTO ${this.tableName} (${columns.join(', ')}) VALUES (${placeholders})`,
             params: values,
             context: { method: 'bulkWrite', data: { id } }
           };
-
-          await this.runQuery(db, insertQuery);
         }
 
-        // Add to success
-        response.success.push(document);
+        // Add to operations list
+        operations.push({
+          document,
+          exists,
+          query
+        });
       } catch (error) {
         // Create a more detailed error message
         const documentId = writeRow.document.id as string;
         const enhancedError = new Error(
-          `Error in bulkWrite for collection '${this.collectionName}' (document ID: ${documentId}): ${error.message}\n` +
+          `Error in bulkWrite preparation for collection '${this.collectionName}' (document ID: ${documentId}): ${error.message}\n` +
           `Document: ${JSON.stringify(writeRow.document)}\n` +
           `Previous: ${writeRow.previous ? JSON.stringify(writeRow.previous) : 'none'}`
         );
@@ -533,29 +617,134 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
           documentId: documentId,
           error: enhancedError
         });
+
+        // If any document fails preparation, fail the entire operation
+        return response;
       }
     }
 
-    // Emit change events for successful writes
-    if (response.success.length > 0) {
-      const changeEvents: RxStorageChangeEvent<RxDocType>[] = response.success.map(doc => ({
-        documentId: doc.id as string,
-        documentData: doc,
-        operation: doc._deleted ? 'DELETE' : 'INSERT',
-        previousDocumentData: null,
-        isLocal: context.startsWith('local-')
-      }));
+    // Second phase: Execute operations in a transaction
+    try {
+      // Start transaction
+      await this.runQuery(db, {
+        query: 'BEGIN TRANSACTION',
+        params: [],
+        context: { method: 'bulkWrite', data: { action: 'begin' } }
+      });
 
-      const eventBulk: EventBulk<RxStorageChangeEvent<RxDocType>, SQLiteChangesCheckpoint> = {
-        events: changeEvents,
-        checkpoint: {
-          id: changeEvents[changeEvents.length - 1].documentId,
-          lwt: Date.now()
-        },
-        context
-      };
+      // Execute all operations using direct database access
+      for (const op of operations) {
+        try {
+          // Use direct database access for better reliability
+          // @ts-ignore - SQLite database methods may vary between implementations
+          if (typeof db.prepare === 'function') {
+            // Clean up the query by removing whitespace and newlines
+            const cleanQuery = op.query.query.replace(/\s+/g, ' ').trim();
+            console.log('Executing query:', cleanQuery);
+            console.log('With params:', op.query.params);
 
-      this.changeEventSubject.next(eventBulk);
+            const stmt = db.prepare(cleanQuery);
+            if (typeof stmt.run === 'function') {
+              // For better-sqlite3, we need to use the spread operator
+              const result = stmt.run(...op.query.params);
+              console.log('Direct execution result:', result);
+            } else {
+              throw new Error('No suitable method found to execute the query');
+            }
+          } else if (typeof db.run === 'function') {
+            // For node-sqlite3
+            await db.run(op.query.query, op.query.params);
+          } else {
+            throw new Error('No suitable method found to execute the query');
+          }
+
+          response.success.push(op.document);
+        } catch (error) {
+          console.error('Error executing operation:', error);
+          console.error('Query:', op.query.query);
+          console.error('Params:', op.query.params);
+
+          // Create a more detailed error message
+          const enhancedError = new Error(
+            `Error executing operation for document '${op.document.id}': ${error.message}\n` +
+            `Query: ${op.query.query}\n` +
+            `Params: ${JSON.stringify(op.query.params)}`
+          );
+
+          // Preserve the original error's stack trace if possible
+          if (error.stack) {
+            enhancedError.stack = error.stack;
+          }
+
+          throw enhancedError;
+        }
+      }
+
+      // Commit transaction
+      await this.runQuery(db, {
+        query: 'COMMIT',
+        params: [],
+        context: { method: 'bulkWrite', data: { action: 'commit' } }
+      });
+
+      // Emit change events for successful writes
+      if (response.success.length > 0) {
+        const changeEvents: RxStorageChangeEvent<RxDocType>[] = response.success.map((doc, index) => {
+          const operation = doc._deleted ? 'DELETE' : (operations[index].exists ? 'UPDATE' : 'INSERT');
+          return {
+            documentId: doc.id as string,
+            documentData: doc,
+            operation,
+            previousDocumentData: documentWrites[index].previous || null,
+            isLocal: context.startsWith('local-')
+          };
+        });
+
+        const eventBulk: EventBulk<RxStorageChangeEvent<RxDocType>, SQLiteChangesCheckpoint> = {
+          events: changeEvents,
+          checkpoint: {
+            id: changeEvents[changeEvents.length - 1].documentId,
+            lwt: Date.now()
+          },
+          context
+        };
+
+        this.changeEventSubject.next(eventBulk);
+      }
+    } catch (error) {
+      // If any error occurs during the transaction, roll back
+      try {
+        await this.runQuery(db, {
+          query: 'ROLLBACK',
+          params: [],
+          context: { method: 'bulkWrite', data: { action: 'rollback' } }
+        });
+      } catch (rollbackError) {
+        console.error('Error rolling back transaction:', rollbackError);
+      }
+
+      // Create a more detailed error message
+      const enhancedError = new Error(
+        `Error in bulkWrite transaction for collection '${this.collectionName}': ${error.message}\n` +
+        `Transaction rolled back, no changes were made.`
+      );
+
+      // Preserve the original error's stack trace if possible
+      if (error.stack) {
+        enhancedError.stack = error.stack;
+      }
+
+      console.error(enhancedError.message);
+
+      // Add to error - use the first document ID as the error ID
+      const firstDocId = documentWrites[0]?.document?.id as string || 'transaction-error';
+      response.error.push({
+        documentId: firstDocId,
+        error: enhancedError
+      });
+
+      // Clear any success entries since the transaction was rolled back
+      response.success = [];
     }
 
     return response;
@@ -590,7 +779,7 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
 
     // Add deleted filter if needed
     if (!withDeleted) {
-      query += ' AND _deleted = 0';
+      query += ' AND "_deleted" = 0';
     }
 
     const queryWithParams: SQLiteQueryWithParams = {
@@ -602,16 +791,28 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     // Execute the query
     let rows;
     try {
+      // Convert boolean values to integers for SQLite
+      const convertedParams = queryWithParams.params.map(param =>
+        typeof param === 'boolean' ? (param ? 1 : 0) : param
+      );
+
+      // Handle better-sqlite3 (synchronous API) vs node-sqlite3 (async API)
       // @ts-ignore - SQLite database methods may vary between implementations
       if (typeof db.all === 'function') {
-        rows = await db.all(queryWithParams.query, queryWithParams.params);
+        const result = db.all(queryWithParams.query, convertedParams);
+        rows = result instanceof Promise ? await result : result;
       } else if (typeof db.prepare === 'function') {
         const stmt = db.prepare(queryWithParams.query);
         if (typeof stmt.all === 'function') {
-          rows = await stmt.all(queryWithParams.params);
+          // For better-sqlite3, we need to use the spread operator
+          const result = stmt.all(...convertedParams);
+          rows = result instanceof Promise ? await result : result;
         } else if (typeof stmt.get === 'function') {
           // Fallback to get for single row
-          rows = [await stmt.get(queryWithParams.params)];
+          // For better-sqlite3, we need to use the spread operator
+          const result = stmt.get(...convertedParams);
+          const singleRow = result instanceof Promise ? await result : result;
+          rows = singleRow ? [singleRow] : [];
         } else {
           throw new Error('No suitable method found to execute the query');
         }
@@ -647,9 +848,14 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       this.tableName
     );
 
+    // Convert boolean values to integers for SQLite
+    const convertedParams = params.map(param =>
+      typeof param === 'boolean' ? (param ? 1 : 0) : param
+    );
+
     const queryWithParams: SQLiteQueryWithParams = {
       query,
-      params,
+      params: convertedParams,
       context: { method: 'query', data: { preparedQuery } }
     };
 
@@ -662,10 +868,13 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       } else if (typeof db.prepare === 'function') {
         const stmt = db.prepare(queryWithParams.query);
         if (typeof stmt.all === 'function') {
-          rows = await stmt.all(queryWithParams.params);
+          // For better-sqlite3, we need to use the spread operator
+          rows = stmt.all(...queryWithParams.params);
         } else if (typeof stmt.get === 'function') {
           // Fallback to get for single row
-          rows = [await stmt.get(queryWithParams.params)];
+          // For better-sqlite3, we need to use the spread operator
+          const result = stmt.get(...queryWithParams.params);
+          rows = result ? [result] : [];
         } else {
           throw new Error('No suitable method found to execute the query');
         }
@@ -706,9 +915,14 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       true
     );
 
+    // Convert boolean values to integers for SQLite
+    const convertedParams = params.map(param =>
+      typeof param === 'boolean' ? (param ? 1 : 0) : param
+    );
+
     const queryWithParams: SQLiteQueryWithParams = {
       query,
-      params,
+      params: convertedParams,
       context: { method: 'count', data: { preparedQuery } }
     };
 
@@ -721,10 +935,13 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
       } else if (typeof db.prepare === 'function') {
         const stmt = db.prepare(queryWithParams.query);
         if (typeof stmt.all === 'function') {
-          rows = await stmt.all(queryWithParams.params);
+          // For better-sqlite3, we need to use the spread operator
+          rows = stmt.all(...queryWithParams.params);
         } else if (typeof stmt.get === 'function') {
           // Fallback to get for single row
-          rows = [await stmt.get(queryWithParams.params)];
+          // For better-sqlite3, we need to use the spread operator
+          const result = stmt.get(...queryWithParams.params);
+          rows = result ? [result] : [];
         } else {
           throw new Error('No suitable method found to execute the query');
         }
@@ -827,16 +1044,24 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     // Execute the query
     let rows;
     try {
+      // Convert boolean values to integers for SQLite
+      const convertedParams = queryWithParams.params.map(param =>
+        typeof param === 'boolean' ? (param ? 1 : 0) : param
+      );
+
       // @ts-ignore - SQLite database methods may vary between implementations
       if (typeof db.all === 'function') {
-        rows = await db.all(queryWithParams.query, queryWithParams.params);
+        rows = await db.all(queryWithParams.query, convertedParams);
       } else if (typeof db.prepare === 'function') {
         const stmt = db.prepare(queryWithParams.query);
         if (typeof stmt.all === 'function') {
-          rows = await stmt.all(queryWithParams.params);
+          // For better-sqlite3, we need to use the spread operator
+          rows = stmt.all(...convertedParams);
         } else if (typeof stmt.get === 'function') {
           // Fallback to get for single row
-          rows = [await stmt.get(queryWithParams.params)];
+          // For better-sqlite3, we need to use the spread operator
+          const result = stmt.get(...convertedParams);
+          rows = result ? [result] : [];
         } else {
           throw new Error('No suitable method found to execute the query');
         }
@@ -902,16 +1127,24 @@ export class RelationalStorageInstanceSQLite<RxDocType> implements RxStorageInst
     // Execute the query
     let rows;
     try {
+      // Convert boolean values to integers for SQLite
+      const convertedParams = findQuery.params.map(param =>
+        typeof param === 'boolean' ? (param ? 1 : 0) : param
+      );
+
       // @ts-ignore - SQLite database methods may vary between implementations
       if (typeof db.all === 'function') {
-        rows = await db.all(findQuery.query, findQuery.params);
+        rows = await db.all(findQuery.query, convertedParams);
       } else if (typeof db.prepare === 'function') {
         const stmt = db.prepare(findQuery.query);
         if (typeof stmt.all === 'function') {
-          rows = await stmt.all(findQuery.params);
+          // For better-sqlite3, we need to use the spread operator
+          rows = stmt.all(...convertedParams);
         } else if (typeof stmt.get === 'function') {
           // Fallback to get for single row
-          rows = [await stmt.get(findQuery.params)];
+          // For better-sqlite3, we need to use the spread operator
+          const result = stmt.get(...convertedParams);
+          rows = result ? [result] : [];
         } else {
           throw new Error('No suitable method found to execute the query');
         }

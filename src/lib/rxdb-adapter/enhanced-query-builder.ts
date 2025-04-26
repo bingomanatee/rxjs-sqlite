@@ -5,7 +5,13 @@
 import type { FilledMangoQuery, MangoQuerySelector } from 'rxdb';
 
 // @ts-ignore - Import from @wonderlandlabs/atmo-db
-import { cmp, and, or, not, parseNode } from '@wonderlandlabs/atmo-db';
+import { cmp, and, or, not } from '@wonderlandlabs/atmo-db';
+
+// Import our custom parseNode function
+import { customParseNode } from './custom-parse-node';
+
+// Use our custom parseNode function
+const parseNode = customParseNode;
 
 // Fallback implementations in case the imports fail
 const fallbackCmp = (field: string, value: any, op: string) => `${field} ${op} ?`;
@@ -33,13 +39,40 @@ export function getSQLiteQueryBuilderFromMangoQuery<RxDocType>(
     ? `SELECT COUNT(*) as count FROM ${tableName}`
     : `SELECT * FROM ${tableName}`;
 
+  // Add a default WHERE clause to filter out deleted documents
+  let whereClause = '"_deleted" = 0';
+
   // Build the WHERE clause if there's a selector
   if (mangoQuery.selector && Object.keys(mangoQuery.selector).length > 0) {
-    const whereClause = buildWhereClause(mangoQuery.selector, params);
-    if (whereClause) {
-      query += ` WHERE ${whereClause}`;
+    // Special handling for direct null value queries
+    const nullFields = Object.entries(mangoQuery.selector)
+      .filter(([_, value]) => value === null)
+      .map(([field]) => field);
+
+    // Remove null fields from the selector for normal processing
+    const nonNullSelector = { ...mangoQuery.selector };
+    nullFields.forEach(field => delete nonNullSelector[field]);
+
+    // Process non-null conditions
+    if (Object.keys(nonNullSelector).length > 0) {
+      const selectorClause = buildWhereClause(nonNullSelector, params);
+      if (selectorClause) {
+        whereClause += ` AND (${selectorClause})`;
+      }
+    }
+
+    // Add IS NULL conditions
+    if (nullFields.length > 0) {
+      const nullConditions = nullFields.map(field => `${field} IS NULL`).join(' AND ');
+      whereClause += ` AND (${nullConditions})`;
+
+      // Log the null conditions for debugging
+      console.log('Added NULL conditions to query:', nullConditions);
     }
   }
+
+  // Add the WHERE clause to the query
+  query += ` WHERE ${whereClause}`;
 
   // Add sorting if not a count query
   if (!isCountQuery && mangoQuery.sort && mangoQuery.sort.length > 0) {
@@ -71,6 +104,9 @@ export function getSQLiteQueryBuilderFromMangoQuery<RxDocType>(
     }
   }
 
+  console.log('Generated SQL query:', query);
+  console.log('Query parameters:', params);
+
   return { query, params };
 }
 
@@ -85,7 +121,84 @@ function buildWhereClause(
   const queryNode = convertSelectorToQueryNode(selector);
 
   // Use atmo-db's parseNode to generate the SQL
-  return parseNode(queryNode, params);
+  let sql = parseNode(queryNode, params);
+
+  // Post-process the SQL to handle null values
+  // Replace "field = NULL" with "field IS NULL"
+  sql = sql.replace(/(\w+)\s*=\s*NULL/gi, '$1 IS NULL');
+
+  // Process our special marker values
+  // Find all parameters that are our special markers
+  const nullParamIndices: number[] = [];
+  const notNullParamIndices: number[] = [];
+
+  params.forEach((param, index) => {
+    if (param === '<<null>>') {
+      nullParamIndices.push(index);
+    } else if (param === '<<not_null>>') {
+      notNullParamIndices.push(index);
+    }
+  });
+
+  // Replace each occurrence of "= ?" with "IS NULL" for null parameters
+  // Start from the end to avoid messing up the indices
+  for (let i = nullParamIndices.length - 1; i >= 0; i--) {
+    const paramIndex = nullParamIndices[i];
+    // Find the position of the paramIndex-th "?" in the SQL
+    let pos = -1;
+    let count = -1;
+    while (count < paramIndex) {
+      pos = sql.indexOf('?', pos + 1);
+      if (pos === -1) break;
+      count++;
+    }
+
+    if (pos !== -1) {
+      // Find the field name and operator before the "?"
+      const beforePos = sql.lastIndexOf('=', pos);
+      if (beforePos !== -1) {
+        // Replace "field = ?" with "field IS NULL"
+        const fieldStart = sql.lastIndexOf(' ', beforePos - 1) + 1;
+        const field = sql.substring(fieldStart, beforePos).trim();
+        const newSql = `${sql.substring(0, fieldStart)}${field} IS NULL${sql.substring(pos + 1)}`;
+        sql = newSql;
+
+        // Remove the null parameter from the params array
+        params.splice(paramIndex, 1);
+      }
+    }
+  }
+
+  // Replace each occurrence of "= ?" with "IS NOT NULL" for not_null parameters
+  // Start from the end to avoid messing up the indices
+  for (let i = notNullParamIndices.length - 1; i >= 0; i--) {
+    const paramIndex = notNullParamIndices[i];
+    // Find the position of the paramIndex-th "?" in the SQL
+    let pos = -1;
+    let count = -1;
+    while (count < paramIndex) {
+      pos = sql.indexOf('?', pos + 1);
+      if (pos === -1) break;
+      count++;
+    }
+
+    if (pos !== -1) {
+      // Find the field name and operator before the "?"
+      const beforePos = sql.lastIndexOf('=', pos);
+      if (beforePos !== -1) {
+        // Replace "field = ?" with "field IS NOT NULL"
+        const fieldStart = sql.lastIndexOf(' ', beforePos - 1) + 1;
+        const field = sql.substring(fieldStart, beforePos).trim();
+        const newSql = `${sql.substring(0, fieldStart)}${field} IS NOT NULL${sql.substring(pos + 1)}`;
+        sql = newSql;
+
+        // Remove the not_null parameter from the params array
+        params.splice(paramIndex, 1);
+      }
+    }
+  }
+
+  return sql;
 }
 
 /**
@@ -130,7 +243,15 @@ function convertSelectorToQueryNode(selector: MangoQuerySelector<any>): any {
 
     // Handle direct equality
     if (typeof value !== 'object' || value === null) {
-      return cmp(field, value, '=');
+      // Special handling for null values - use a marker value that we can easily find and replace
+      if (value === null) {
+        return cmp(field, '<<null>>', '=');
+      }
+
+      // Convert boolean values to integers for SQLite
+      const sqliteValue = typeof value === 'boolean' ? (value ? 1 : 0) : value;
+
+      return cmp(field, sqliteValue, '=');
     }
 
     // Handle operators
@@ -142,7 +263,12 @@ function convertSelectorToQueryNode(selector: MangoQuerySelector<any>): any {
 
     // Convert each operator
     const operatorConditions = operatorKeys.map(op => {
-      const opValue = (value as any)[op];
+      let opValue = (value as any)[op];
+
+      // Convert boolean values to integers for SQLite
+      if (typeof opValue === 'boolean') {
+        opValue = opValue ? 1 : 0;
+      }
 
       switch (op) {
         case '$eq':
@@ -173,12 +299,14 @@ function convertSelectorToQueryNode(selector: MangoQuerySelector<any>): any {
         case '$exists':
           // Handle $exists differently since it's not a standard comparison
           if (opValue) {
-            return { field, op: 'IS NOT NULL' };
+            // For $exists: true, use a special marker for IS NOT NULL
+            return cmp(field, '<<not_null>>', '=');
           } else {
-            return { field, op: 'IS NULL' };
+            // For $exists: false, use a special marker for IS NULL
+            return cmp(field, '<<null>>', '=');
           }
         default:
-          console.warn(`Unsupported operator: ${op}`);
+          // Silently ignore unsupported operators
           return null;
       }
     }).filter(Boolean);

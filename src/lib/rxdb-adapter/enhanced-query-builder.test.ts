@@ -16,7 +16,7 @@ describe('Enhanced Query Builder', () => {
 
     const { query, params } = getSQLiteQueryBuilderFromMangoQuery(mangoQuery, tableName);
 
-    expect(query).toContain('WHERE name = ?');
+    expect(query).toContain('WHERE "_deleted" = 0 AND (name = ?)');
     expect(params).toEqual(['John']);
   });
 
@@ -123,8 +123,8 @@ describe('Enhanced Query Builder', () => {
     expect(params).toContain('Jane');
   });
 
-  // Skip this test for now as we need to implement custom handling for $exists
-  it.skip('should build a query with $exists operator', () => {
+  // Test for $exists operator
+  it('should build a query with $exists operator', () => {
     const mangoQuery = {
       selector: {
         email: {

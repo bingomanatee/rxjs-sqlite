@@ -104,7 +104,9 @@ export class RxStorageInstanceSQLite<RxDocType> implements RxStorageInstance<
    */
   private async runQuery(db: SQLiteDatabaseClass, query: SQLiteQueryWithParams): Promise<void> {
     try {
-      await db.run(query);
+      // Prepare the statement and run it with parameters
+      const stmt = db.prepare(query.query);
+      await stmt.run(query.params || []);
     } catch (error) {
       console.error('Error running query:', error);
       console.error('Query:', query.query);
@@ -266,7 +268,8 @@ export class RxStorageInstanceSQLite<RxDocType> implements RxStorageInstance<
     };
 
     // Execute the query
-    const rows = await db.all(queryWithParams);
+    const stmt = db.prepare(queryWithParams.query);
+    const rows = await stmt.all(queryWithParams.params || []);
 
     // Parse the results
     return rows.map(row => {
@@ -300,7 +303,8 @@ export class RxStorageInstanceSQLite<RxDocType> implements RxStorageInstance<
     };
 
     // Execute the query
-    const rows = await db.all(queryWithParams);
+    const stmt = db.prepare(queryWithParams.query);
+    const rows = await stmt.all(queryWithParams.params || []);
 
     // Parse the results
     const documents = rows.map(row => {
@@ -339,7 +343,8 @@ export class RxStorageInstanceSQLite<RxDocType> implements RxStorageInstance<
     };
 
     // Execute the query
-    const rows = await db.all(queryWithParams);
+    const stmt = db.prepare(queryWithParams.query);
+    const rows = await stmt.all(queryWithParams.params || []);
 
     // Parse the result
     const count = rows[0]?.count || 0;
@@ -428,7 +433,8 @@ export class RxStorageInstanceSQLite<RxDocType> implements RxStorageInstance<
     };
 
     // Execute the query
-    const rows = await db.all(queryWithParams);
+    const stmt = db.prepare(queryWithParams.query);
+    const rows = await stmt.all(queryWithParams.params || []);
 
     // Parse the results
     const documents = rows.map(row => {
@@ -484,7 +490,8 @@ export class RxStorageInstanceSQLite<RxDocType> implements RxStorageInstance<
     };
 
     // Execute the query
-    const rows = await db.all(findQuery);
+    const stmt = db.prepare(findQuery.query);
+    const rows = await stmt.all(findQuery.params || []);
 
     if (rows.length === 0) {
       // No documents to clean up

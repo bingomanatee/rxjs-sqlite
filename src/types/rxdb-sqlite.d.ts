@@ -8,8 +8,12 @@ declare module 'rxdb/dist/types/plugins/storage-sqlite/sqlite-types' {
   }
 
   export interface SQLiteQueryWithParams {
-    sql: string;
+    query: string;
     params: any[];
+    context?: {
+      method: string;
+      data: any
+    };
   }
 
   export interface SQLiteDatabaseClass {

@@ -12,6 +12,7 @@ import { SQLiteAdapter } from '../types';
  * @returns A new SQLite adapter
  */
 export function createSQLiteAdapter(dbPath: string, options?: any): SQLiteAdapter {
+  if (options) console.log('adapter options', options);
   return new BetterSQLiteAdapter(dbPath, options);
 }
 
